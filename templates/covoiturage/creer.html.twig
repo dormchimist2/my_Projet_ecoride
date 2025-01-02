@@ -1,0 +1,74 @@
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer un trajet de covoiturage{% endblock %}
+
+{% block body %}
+    <h1>Créer un trajet de covoiturage</h1>
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    <div data-controller="form" data-action="submit->form#submit">
+        {{ form_start(form, { 'data-turbo': 'true' }) }}
+            <div class="form-group">
+                {{ form_label(form.lieuDeDepart) }}
+                {{ form_widget(form.lieuDeDepart, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.lieuDeDepart) }}
+            </div>
+
+             <div class="form-group">
+                {{ form_label(form.dateDeDepart) }}
+                {{ form_widget(form.dateDeDepart, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.dateDeDepart) }}
+            </div>
+
+            <div class="form-group">
+                {{ form_label(form.heureDeDepart) }}
+                {{ form_widget(form.heureDeDepart, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.heureDeDepart) }}
+            </div>
+
+
+            <div class="form-group">
+                {{ form_label(form.lieuArrivee) }}
+                {{ form_widget(form.lieuArrivee, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.lieuArrivee) }}
+            </div>
+
+            <div class="form-group">
+                {{ form_label(form.dateArrivee) }}
+                {{ form_widget(form.dateArrivee, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.dateArrivee) }}
+            </div>
+
+             <div class="form-group">
+                {{ form_label(form.heureArrivee) }}
+                {{ form_widget(form.heureArrivee, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.heureArrivee) }}
+            </div>
+
+            <div class="form-group">
+                {{ form_label(form.nombreDePlace) }}
+                {{ form_widget(form.nombreDePlace, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.nombreDePlace) }}
+            </div>
+
+            <div class="form-group">
+                {{ form_label(form.prixPersonne) }}
+                {{ form_widget(form.prixPersonne, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.prixPersonne) }}
+            </div>
+
+            <button type="submit" class="btn btn-primary mt-3">Créer le trajet</button>
+        {{ form_end(form) }}
+    </div>
+
+    <h2 class="mt-5">Liste des trajets</h2>
+    <div id="trajets-list" data-turbo-target="trajets">
+        {% include 'covoiturage/index.html.twig' %}
+    </div>
+{% endblock %}
