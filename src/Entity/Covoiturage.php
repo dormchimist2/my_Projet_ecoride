@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\CovoiturageRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CovoiturageRepository::class)]
 class Covoiturage
@@ -14,7 +15,12 @@ class Covoiturage
     #[ORM\Column]
     private ?int $id = null;
 
+    // Date de départ avec contrainte GreaterThanOrEqual
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Assert\GreaterThanOrEqual(
+        value: "today", 
+        message: "La date de départ doit être aujourd'hui ou dans le futur."
+    )]
     private ?\DateTimeInterface $dateDepart = null;
 
     #[ORM\Column(type: Types::TIME_MUTABLE)]
@@ -23,7 +29,12 @@ class Covoiturage
     #[ORM\Column(length: 50)]
     private ?string $pointDepart = null;
 
+    // Date d'arrivée avec contrainte GreaterThanOrEqual
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Assert\GreaterThanOrEqual(
+        value: "today", 
+        message: "La date d'arrivée doit être aujourd'hui ou dans le futur."
+    )]
     private ?\DateTimeInterface $dateArrivee = null;
 
     #[ORM\Column(type: Types::TIME_MUTABLE)]

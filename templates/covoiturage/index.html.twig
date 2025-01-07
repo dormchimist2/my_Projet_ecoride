@@ -8,9 +8,8 @@
     .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
 </style>
 
-
 <div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+    <h1>Hello  ✅</h1>
 
     This friendly message is coming from:
     <ul>
@@ -18,20 +17,12 @@
         <li>Your template at <code>C:/Users/polonium/my_project_ecoride/templates/covoiturage/index.html.twig</code></li>
     </ul>
 </div>
-{{ form_start(form, {'attr': {'class': 'w-full'}}) }}
-
-<div class="form-control">
-    <i class="fa fa-calendar"></i> {{ form_label(form.dueDate) }}
-    {{ form_widget(form.dateDepart) }}
-
-    <small>{{ form_help(form.dateDepart) }}</small>
-
-    <div class="form-error">
-        {{ form_errors(form.dateDepart) }}
-    </div>
-</div>
-
-
-<button class="btn btnArcadia">{{ button_label|default('Save') }}</button>
-{{ form_end(form) }}
+<ul>
+        {% for covoiturage in covoiturages %}
+            <li>{{ covoiturage.dateDepart
+             }}</li>
+        {% else %}
+            <li>Aucun covoiturage trouvé.</li>
+        {% endfor %}
+    </ul>
 {% endblock %}
