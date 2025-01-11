@@ -21,9 +21,9 @@
     <h2>Créer un nouveau covoiturage</h2>
 
     
-    {{ form_start(form) }}
+   {{ form_start(form, { 'attr': { 'class': 'needs-validation' } }) }}
     <div class="form-group">
-        {{ form_label(form.pointDepart) }}
+        {{ form_label(form.pointDepart,null,{'label_attr':{'class': 'form-label'}}) }}
         {{ form_widget(form.pointDepart, {'attr': {'class': 'form-control'}}) }}
         {{ form_errors(form.pointDepart) }}
     </div>
@@ -69,8 +69,9 @@
         {{ form_widget(form.prix, {'attr': {'class': 'form-control'}}) }}
         {{ form_errors(form.prix) }}
     </div>
-
+<div class="form-group">
     <button type="submit" class="btn btn-primary mt-3">Créer le trajet</button>
+    </div>
 {{ form_end(form) }}
 
 <!-- Affichage des messages flash -->
@@ -86,4 +87,12 @@
             <li>Aucun covoiturage trouvé.</li>
         {% endfor %}
     </ul>
+    <div data-controller="hello">
+    Stimulus Controller connecté !
+</div>
+<div data-controller="hello">
+    Stimulus Controller connecté !
+</div>
+
+    
 {% endblock %}

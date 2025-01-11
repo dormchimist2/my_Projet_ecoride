@@ -1,0 +1,18 @@
+// assets/styles/app.scss
+@import "~bootstrap/scss/bootstrap"; // Importe les styles Bootstrap
+
+body {
+    background-color: lightgray;
+}
+
+// Vos styles personnalisés
+form {
+    margin: 20px;
+    .form-group {
+        margin-bottom: 15px;
+    }
+    .btn {
+        background-color: #007bff;
+        color: #fff;
+    }
+}
