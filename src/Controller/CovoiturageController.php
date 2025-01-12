@@ -3,14 +3,22 @@ namespace App\Controller;
 
 use App\Entity\Covoiturage;
 use App\Form\CovoiturageType;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request; // Ajouter l'import pour Request (effet magique)
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\CovoiturageRepository;
+use Symfony\Component\HttpKernel\Log\Logger;  // Importation du Logger
 
 class CovoiturageController extends AbstractController
 {
+    private $entityManager;
+    public function __construct(EntityManagerInterface $entityManager)
+    {
+        $this->entityManager = $entityManager;  // Injection  l’EntityManager
+    }
+
     #[Route('/covoiturage', name: 'covoiturage_index', methods: ['GET', 'POST'])]
     public function index(Request $request, CovoiturageRepository $covoiturageRepository): Response
     {
@@ -26,17 +34,18 @@ class CovoiturageController extends AbstractController
         // Traitement de la soumission du formulaire
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            // Enregistrement du nouveau covoiturage
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($covoiturage);
-            $entityManager->flush();
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
+                // Enregistrement du nouveau covoiturage
+                $this->entityManager->persist($covoiturage);
+                $this->entityManager->flush();
 
-            // Message flash de succès
-            $this->addFlash('success', 'Covoiturage créé avec succès !');
+                // Message flash de succès
+                $this->addFlash('success', 'Covoiturage créé avec succès !');
 
-            // Redirection vers la même page pour voir la liste mise à jour
-            return $this->redirectToRoute('covoiturage_index');
+                // Redirection vers la même page pour voir la liste mise à jour
+                return $this->redirectToRoute('covoiturage_index');
+            } 
         }
 
         // Renvoie la vue avec le formulaire et les covoiturages

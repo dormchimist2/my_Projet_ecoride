@@ -81,8 +81,7 @@
 
 <ul>
         {% for covoiturage in covoiturages %}
-            <li>{{ covoiturage.dateDepart
-             }}</li>
+            <li>{{ covoiturage.dateDepart|date('d/m/Y') }}</li>
         {% else %}
             <li>Aucun covoiturage trouvé.</li>
         {% endfor %}
