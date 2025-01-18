@@ -79,13 +79,49 @@
     <div class="flash-success">{{ message }}</div>
 {% endfor %}
 
-<ul>
-        {% for covoiturage in covoiturages %}
-            <li>{{ covoiturage.dateDepart|date('d/m/Y') }}</li>
+<div class="text-center mb-4">
+<h1 class="text-primary"> Liste de vos covoiturages</h1>
+</div>
+{% for covoiturage in covoiturages %}
+<div class="container my-4 p-3 border rounded shadow-sm bg-light">
+ 
+  <div class="text-center mb-4">
+    <h2 class="text-primary">{{ covoiturage.dateDepart|date('d M y') }}</h2>
+  </div>
+
+  <!-- Section Départ / Flèche / Arrivée -->
+  <div class="d-flex justify-content-between align-items-center">
+    <!-- Point de départ -->
+    <div class="text-start">
+      <h4 class="fw-bold text-primary">{{ covoiturage.pointDepart }}</h4>
+      <p class="text-muted mb-0"><i class="bi bi-clock"></i> {{ covoiturage.heureDepart|date('H:i') }}</p>
+    </div>
+
+    <!-- Image flèche -->
+    <div class="text-center tabista">
+      <ul>
+      <li class="pointda"></li>
+      <li class="loctub"></li>
+      <li class="pointda"></li>
+      </ul>
+    </div>
+
+    <!-- Point d'arrivée -->
+    <div class="text-end">
+      <h4 class="fw-bold text-success">{{ covoiturage.pointArrivee }}</h4>
+      <p class="text-muted mb-0">{{ covoiturage.dateDepart|date('d/m/Y') }}</p>
+      <p class="text-muted mb-0"><i class="bi bi-clock"></i> {{ covoiturage.heureArrivee|date('H:i') }}</p>
+    </div>
+  </div>
+</div>
+
+
+
         {% else %}
-            <li>Aucun covoiturage trouvé.</li>
+            <li>Vous avez pas encore réalisé de covoiturage.</li>
         {% endfor %}
-    </ul>
+
+    
     <div data-controller="hello">
     Stimulus Controller connecté !
 </div>

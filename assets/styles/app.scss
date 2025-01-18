@@ -1,11 +1,15 @@
-// assets/styles/app.scss
-@import "~bootstrap/scss/bootstrap"; // Importe les styles Bootstrap
+// Variables globales
+$primary: #117788;
 
+// Importation des styles Bootstrap
+@import "~bootstrap/scss/bootstrap";
+
+// Styles globaux
 body {
     background-color: lightgray;
 }
 
-// Vos styles personnalisés
+// Formulaires
 form {
     margin: 20px;
     .form-group {
@@ -14,5 +18,45 @@ form {
     .btn {
         background-color: #007bff;
         color: #fff;
+        &:hover {
+            background-color: darken(#007bff, 10%);
+        }
+    }
+}
+
+// Conteneur
+.container {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+// Styles spécifiques pour .tabista
+.tabista ul {
+    list-style-type: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0;
+    margin: 0;
+}
+
+.pointda {
+    border-radius: 50% 50% 50% 50%;
+    width: 2rem;
+    height: 2rem;
+    background: $primary;
+}
+
+.loctub {
+    flex-grow: 1;
+    height: 2px;
+    width: 40rem;
+    margin: 0 0.625rem;
+    background: black;
+    @media (max-width: 915px) {
+        width: 5rem;
     }
 }
