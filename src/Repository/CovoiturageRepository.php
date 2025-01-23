@@ -16,28 +16,56 @@ class CovoiturageRepository extends ServiceEntityRepository
         parent::__construct($registry, Covoiturage::class);
     }
 
-    //    /**
-    //     * @return Covoiturage[] Returns an array of Covoiturage objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('c.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /**
+     * Recherche des trajets selon les critères spécifiés.
+     */
+    public function findTrajets(
+        string $pointDepart,
+        string $pointArrivee,
+        \DateTime $dateDepart,
+        ?\DateTime $heureDepart = null,
+       
+    ): array {
+        $qb = $this->createQueryBuilder('c')
+            ->where('LOWER(c.pointDepart) = LOWER(:pointDepart)')
+            ->andWhere('LOWER(c.pointArrivee) = LOWER(:pointArrivee)')
+            ->andWhere('c.dateDepart = :dateDepart')
+           
+            ->setParameter('pointDepart', trim(strtolower($pointDepart)))
+            ->setParameter('pointArrivee', trim(strtolower($pointArrivee)))
+            ->setParameter('dateDepart', $dateDepart);
+            
+    
+        if ($heureDepart) {
+            // cherche covoiturage égale à l'heure demandée ou Cherche des trajets avec heure différente 
+            $qb->andWhere('(c.heureDepart = :heureDepart OR c.heureDepart != :heureDepart)')
+               ->setParameter('heureDepart', $heureDepart);
+        }
+    
+        $qb->orderBy('c.dateDepart', 'ASC')
+           ->addOrderBy('c.heureDepart', 'ASC');
+    
+           $results = $qb->getQuery()->getResult(); // Obtenez les objets Covoiturage
 
-    //    public function findOneBySomeField($value): ?Covoiturage
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    
+        if (empty($results)) {
+            throw new \Exception('Aucun trajet trouvé avec les critères spécifiés.');
+        }
+        
+        return array_map(function (Covoiturage $trajet) {
+            return [
+                'id' => $trajet->getId(),
+                'pointDepart' => $trajet->getPointDepart(),
+                'pointArrivee' => $trajet->getPointArrivee(),
+                'dateDepart' => $trajet->getDateDepart()->format('Y-m-d'),
+                'dateArrivee' => $trajet->getDateArrivee()->format('Y-m-d'),
+                'heureDepart' => $trajet->getHeureDepart() ? $trajet->getHeureDepart()->format('H:i') : null,
+                'heureArrivee' => $trajet->getHeureArrivee() ? $trajet->getHeureArrivee()->format('H:i') : null,
+                'nbPlace' => $trajet->getNbPlace(),
+                'prix' => $trajet->getPrix(),
+            ];
+        }, $results);
+    }
+    
+    
 }

@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Rechercher un covoiturage{% endblock %}
+
+{% block body %}
+<div data-controller="search-covoiturage">
+    <form data-action="submit->search-covoiturage#search">
+        <input data-search-covoiturage-target="pointDepart" type="text" placeholder="Ville de départ" required />
+        <input data-search-covoiturage-target="pointArrivee" type="text" placeholder="Ville de destination" required />
+        <input data-search-covoiturage-target="dateDepart" type="date" />
+        <input data-search-covoiturage-target="heureDepart" type="time" placeholder="Heure de départ" aria-label="Heure de départ" />
+        
+        <button type="submit">Rechercher</button>
+    </form>
+
+    <!-- Zone d'affichage des résultats -->
+    <ul data-search-covoiturage-target="results"></ul>
+
+    <!-- Message "Aucun résultat" -->
+    <div data-search-covoiturage-target="noResults" class="hidden">
+        Aucun trajet trouvé.
+    </div>
+</div>
+
+{% endblock %}
+
