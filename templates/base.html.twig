@@ -16,3 +16,38 @@
         {% block body %}{% endblock %}
     </body>
 </html>
+<!-- <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/">Mon Site</a>
+    <div class="collapse navbar-collapse">
+        <ul class="navbar-nav">
+            {% if is_granted('ROLE_ADMIN') %}
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin">Panneau d'administration</a>
+                </li>
+            {% endif %}
+
+            {% if is_granted('ROLE_CONDUCTEUR') %}
+                <li class="nav-item">
+                    <a class="nav-link" href="/conducteur">Zone conducteur</a>
+                </li>
+            {% endif %}
+
+            {% if is_granted('ROLE_PASSAGER') %}
+                <li class="nav-item">
+                    <a class="nav-link" href="/passager">Zone passager</a>
+                </li>
+            {% endif %}
+
+            {% if app.user %}
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout">Déconnexion</a>
+                </li>
+            {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="/login">Connexion</a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>
+-->

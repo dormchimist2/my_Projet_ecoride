@@ -1,0 +1,86 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer un compte{% endblock %}
+
+{% block body %}
+   <div class="container mt-5">
+    <h1 class="mb-4">Créer un compte</h1>
+    {{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+
+     <div class="form-group mb-3">
+            {{ form_label(form.firstName, 'Prénom') }}
+            {{ form_widget(form.firstName, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.firstName) }}
+        </div>
+
+        <div class="form-group mb-3">
+            {{ form_label(form.lastName, 'Nom') }}
+            {{ form_widget(form.lastName, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.lastName) }}
+        </div>
+
+        <div class="form-group mb-3">
+            {{ form_label(form.phoneNumber, 'Numéro de téléphone') }}
+            {{ form_widget(form.phoneNumber, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.phoneNumber) }}
+        </div>
+
+
+
+    <div class="form-group mb-3">
+        {{ form_label(form.email, 'Adresse e-mail') }}
+        {{ form_widget(form.email, {'attr': {'class': 'form-control', 'placeholder': 'Entrez votre adresse e-mail'}}) }}
+        {{ form_errors(form.email) }}
+    </div>
+
+
+    <div class="form-group mb-3">
+        {{ form_label(form.password, 'Mot de passe') }}
+        {{ form_widget(form.password, {'attr': {'class': 'form-control', 'placeholder': 'Créez un mot de passe'}}) }}
+        {{ form_errors(form.password) }}
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            {{ form_label(form.street, 'Rue') }}
+            {{ form_widget(form.street, {'attr': {'class': 'form-control', 'placeholder': 'Entrez votre rue'}}) }}
+            {{ form_errors(form.street) }}
+        </div>
+        <div class="col-md-3">
+            {{ form_label(form.postalCode, 'Code postal') }}
+            {{ form_widget(form.postalCode, {'attr': {'class': 'form-control', 'placeholder': 'Code postal'}}) }}
+            {{ form_errors(form.postalCode) }}
+        </div>
+        <div class="col-md-3">
+            {{ form_label(form.city, 'Ville') }}
+            {{ form_widget(form.city, {'attr': {'class': 'form-control', 'placeholder': 'Ville'}}) }}
+            {{ form_errors(form.city) }}
+        </div>
+         <div class="form-group mb-3">
+            {{ form_label(form.country, 'Pays') }}
+            {{ form_widget(form.country, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.country) }}
+        </div>
+    </div>
+    
+   <div class="form-group mb-3">
+    {{ form_label(form.roles, 'Rôles') }}
+    <div>
+        {% for choice in form.roles %}
+            <div class="form-check form-check-inline">
+                {{ form_widget(choice, {'attr': {'class': 'form-check-input'}}) }}
+                {{ form_label(choice, null, {'label_attr': {'class': 'form-check-label'}}) }}
+            </div>
+        {% endfor %}
+    </div>
+    {{ form_errors(form.roles) }}
+</div>
+
+<div class="form-group mt-4">
+        {{ form_widget(form.submit, {'attr': {'class': 'btn btn-primary btn-block'}}) }}
+    </div>
+
+    {{ form_end(form) }}
+</div>
+
+{% endblock %}
