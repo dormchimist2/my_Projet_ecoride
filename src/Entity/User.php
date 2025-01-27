@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -51,6 +52,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 100)]
     private ?string $country = null;
+
+    #[ORM\Column(type: Types::BLOB, nullable: true)]
+    private $photo = null;
+
+    #[ORM\Column(length: 50)]
+    private ?string $pseudo = null;
 
     public function getId(): ?int
     {
@@ -168,7 +175,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->street;
     }
 
-    public function setAddress(?string $street): static
+    public function setStreet(?string $street): static
     {
         $this->street = $street;
 
@@ -207,6 +214,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setCountry(string $country): static
     {
         $this->country = $country;
+
+        return $this;
+    }
+
+    public function getPhoto()
+    {
+        return $this->photo;
+    }
+
+    public function setPhoto($photo): static
+    {
+        $this->photo = $photo;
+
+        return $this;
+    }
+
+    public function getPseudo(): ?string
+    {
+        return $this->pseudo;
+    }
+
+    public function setPseudo(string $pseudo): static
+    {
+        $this->pseudo = $pseudo;
 
         return $this;
     }

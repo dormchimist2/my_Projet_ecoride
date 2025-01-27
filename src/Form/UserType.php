@@ -3,6 +3,7 @@ namespace App\Form;
 
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CountryType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -37,14 +38,21 @@ class UserType extends AbstractType
                 'multiple' => true,
                 'label' => 'Rôles',
             ])
+
             ->add('password', PasswordType::class, [
                 'label' => 'Mot de passe',
                 'required' => true,
                 'constraints' => [
                     new Assert\NotBlank(),
-                    new Assert\Length(['min' => 6]),
+                    new Assert\Length(['min' => 8, 'max' => 4096]),
+                    new Assert\Regex([
+                        'pattern' => '/^(?=.*[A-Z])(?=.*[a-z])(?=.*[\d])(?=.*[\W_])[A-Za-z\d\W_]{8,}$/',
+                        'message' => 'Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial.',
+                    ]),
                 ],
             ])
+            
+
             ->add('firstName', TextType::class, [
                 'label' => 'Prénom',
                 'required' => true,
@@ -59,6 +67,41 @@ class UserType extends AbstractType
                     new Assert\NotBlank(),
                 ],
             ])
+
+           ->add('pseudo', TextType::class, [
+    'label' => 'Pseudo',
+    'required' => true,
+    'constraints' => [
+        new Assert\NotBlank(),
+        new Assert\Length([
+            'min' => 3,
+            'max' => 50,
+            'minMessage' => 'Le pseudo doit contenir au moins {{ limit }} caractères.',
+            'maxMessage' => 'Le pseudo ne peut pas dépasser {{ limit }} caractères.',
+        ]),
+    ],
+])
+
+
+            ->add('photo', FileType::class, [
+                'label' => 'Image (Fichiers JPG ou PNG)',
+                'mapped' => false, // Ne pas mapper directement à l'entité
+                'required' => false,
+                'constraints' => [
+                    new Assert\File([
+                        'maxSize' => '2M',
+                        'mimeTypes' => [
+                            'image/jpeg',
+                            'image/png',
+                        ],
+                        'mimeTypesMessage' => 'Veuillez télécharger une image valide (JPEG ou PNG).',
+                    ]),
+                ],
+            ])
+            
+
+
+
             ->add('phoneNumber', TextType::class, [
                 'label' => 'Numéro de téléphone',
                 'required' => false,
