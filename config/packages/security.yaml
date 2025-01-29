@@ -20,12 +20,24 @@ security:
         main:
             lazy: true
             provider: app_user_provider
-            # form_login:
-            #     login_path: app_login
-            #     check_path: app_login
+            form_login:
+                 login_path: app_login
+                 check_path: app_login
+                 username_parameter: email  # On précise que l'email est l'identifiant
+                 password_parameter: password
+            entry_point: App\Security\UserAuthenticator
             logout:
-                # path: app_logout
-                # target: /
+                 path: app_logout
+                 target: /
+            custom_authenticator: App\Security\UserAuthenticator
+
+            remember_me:
+                secret: '%kernel.secret%'
+                lifetime: 604800
+                path: /
+                # by default, the feature is enabled by checking a checkbox in the
+                # login form, uncomment the following line to always enable it.
+                #always_remember_me: true
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
@@ -36,11 +48,11 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-         # - { path: ^/admin, roles: ROLE_ADMIN }
-         # - { path: ^/employee, roles: ROLE_EMPLOYE }
-         # - { path: ^/conducteur, roles: ROLE_CONDUCTEUR }
-         # - { path: ^/passager, roles: ROLE_PASSAGER }
-         # - { path: ^/, roles: ROLE_USER }
+          - { path: ^/admin, roles: ROLE_ADMIN }
+          - { path: ^/employee, roles: ROLE_EMPLOYE }
+          - { path: ^/conducteur, roles: ROLE_CONDUCTEUR }
+          - { path: ^/passager, roles: ROLE_PASSAGER }
+          - { path: ^/profile, roles: ROLE_USER }
 
 when@test:
     security:
