@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\UserType;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -58,4 +59,24 @@ class UserRegisterController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+    #[Route('/users', name: 'app_users_list', methods: ['GET'])]
+public function list(UserRepository $userRepository): Response
+{
+    // Récupérer tous les utilisateurs
+    $users = $userRepository->findAll();
+
+    // Vérifiez si la liste est vide
+    if (empty($users)) {
+        $this->addFlash('info', 'Aucun utilisateur trouvé.');
+    }
+
+    return $this->render('user/list.html.twig', [
+        'users' => $users, // Passez les utilisateurs à la vue
+    ]);
 }
+
+
+
+
+}
+
