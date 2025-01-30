@@ -1,66 +1,109 @@
-// Variables globales
+/// Variables globales
 $primary: #117788;
+$secondary: #e4e4e4;
+$avatar-size: 150px;
 
 // Importation des styles Bootstrap
 @import "~bootstrap/scss/bootstrap";
 
 // Styles globaux
 body {
-    background-color: lightgray;
+    background-color: #f4f7fc;
+    font-family: 'Inter', sans-serif;
 }
 
-// Formulaires
-form {
-    margin: 20px;
-    .form-group {
-        margin-bottom: 15px;
-    }
-    .btn {
-        background-color: #007bff;
-        color: #fff;
-        &:hover {
-            background-color: darken(#007bff, 10%);
-        }
-    }
-}
-
-// Conteneur
-.container {
-    background-color: #ffffff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-// Styles spécifiques pour .tabista
-.tabista ul {
-    list-style-type: none;
+// Section photo de profil
+#image-display {
+    border: 3px solid #fff;
+    width: $avatar-size;
+    height: $avatar-size;
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: 0;
-    margin: 0;
+    justify-content: center;
+    border-radius: 50%;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin: 0 auto;
 }
 
-.pointda {
-    border-radius: 50% 50% 50% 50%;
-    width: 2rem;
-    height: 2rem;
-    background: $primary;
+#photopresentation h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #333;
+    margin-top: 20px;
+    background-color: #0d4d00;
+    color: #fff;
+    border-radius: 20px;
+    padding: 12px 25px;
+    text-transform: uppercase;
 }
 
-.loctub {
-    flex-grow: 1;
-    height: 2px;
-    width: 40rem;
-    margin: 0 0.625rem;
-    background: black;
-    @media (max-width: 915px) {
-        width: 5rem;
+#photopresentation {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+// Informations utilisateur
+.card {
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    padding: 20px;
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.card p {
+    font-size: 1.1rem;
+}
+
+.card i {
+    color: $primary;
+    margin-right: 10px;
+}
+
+.card .row {
+    margin-bottom: 10px;
+}
+
+.card .col-md-6 {
+    display: flex;
+    align-items: center;
+}
+
+.card .mb-3 {
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.alert {
+    background-color: #ff4d4d;
+    color: white;
+    border-radius: 5px;
+    font-size: 1.1rem;
+    padding: 15px;
+    margin-top: 20px;
+}
+
+@media (max-width: 768px) {
+    #image-display {
+        width: 120px;
+        height: 120px;
+    }
+
+    #photopresentation h1 {
+        font-size: 2rem;
+    }
+
+    .card-body {
+        padding: 15px;
+    }
+
+    .alert {
+        font-size: 1rem;
     }
 }
-.hidden {
-    display: none;
-  }
-  
