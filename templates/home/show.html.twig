@@ -1,0 +1,24 @@
+{# templates/home/show.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Bienvenue sur EcoRide{% endblock %}
+
+{% block body %}
+    <div class="hero-container" style="background-image: url('{{ asset('uploads/images/acceil.png') }}'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+        <h1 class="hero-title">Bienvenue sur EcoRide</h1>
+        <h2 class="hero-subtitle">Avec EcoRide, covoiturez aujourd'hui, sauvez demain.</h2>
+        <p class="hero-text lead">
+            EcoRide est une plateforme de covoiturage innovante et engagée pour un avenir plus respectueux de l’environnement. 
+            Nous croyons que chaque trajet partagé est une opportunité de réduire notre empreinte carbone, 
+            de désengorger les routes et de créer des liens entre les personnes. 
+            Ensemble, faisons du covoiturage un réflexe écoresponsable. 
+            <strong>Rejoignez le mouvement dès aujourd’hui avec EcoRide !</strong>
+        </p>
+    </div>
+
+    {# Inclusion du formulaire de recherche #}
+    <div class="container my-5">
+        {% include 'search_covoiturage/index.html.twig' %}
+    </div>
+
+{% endblock %}

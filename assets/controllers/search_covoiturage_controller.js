@@ -5,57 +5,91 @@ export default class extends Controller {
 
   async search(event) {
     event.preventDefault();
-
+  
     const pointDepart = this.pointDepartTarget.value.trim();
     const pointArrivee = this.pointArriveeTarget.value.trim();
     const dateDepart = this.dateDepartTarget.value.trim();
     const heureDepart = this.hasHeureDepartTarget ? this.heureDepartTarget.value.trim() : null;
-
+  
     // Validation des champs
     if (!pointDepart || !pointArrivee || !dateDepart) {
       this.resultsTarget.innerHTML = `<p class="text-danger">Tous les champs obligatoires doivent être renseignés.</p>`;
       return;
     }
-
+  
     // Affichage du message de chargement
     this.resultsTarget.innerHTML = "<p>Recherche en cours...</p>";
-
+  
     try {
       // Construction de l'URL de l'API
       const heureDepartQuery = heureDepart ? `&heureDepart=${encodeURIComponent(heureDepart)}` : "";
       const response = await fetch(
         `/api/search?pointDepart=${encodeURIComponent(pointDepart)}&pointArrivee=${encodeURIComponent(pointArrivee)}&dateDepart=${encodeURIComponent(dateDepart)}${heureDepartQuery}`
       );
-
-      // Gestion des erreurs de réponse
+  
+      // Vérification des erreurs HTTP
       if (!response.ok) {
-        if (response.status === 404) {
-          throw new Error("Aucun trajet trouvé pour les critères spécifiés.");
-        } else if (response.status === 400) {
-          throw new Error("Paramètres invalides. Vérifiez les données saisies.");
-        } else {
-          throw new Error(`Erreur serveur : ${response.status}`);
-        }
+        throw await this.handleErrorResponse(response);
       }
-
+  
       // Lecture des données
       const data = await response.json();
-
+  
       // Gestion des résultats
       if (data.exactMatches && data.exactMatches.length > 0) {
-        this.displayResults(data.exactMatches, "covoiturage correspondants");
+        this.displayResults(data.exactMatches, "Covoiturage correspondant");
       } else if (data.suggestedMatches && data.suggestedMatches.length > 0) {
         this.displayResults(data.suggestedMatches, "Suggestions de covoiturage");
       } else {
         this.resultsTarget.innerHTML = `<p>Aucun trajet trouvé pour les critères spécifiés.</p>`;
       }
+  
     } catch (error) {
       console.error("Erreur lors de la recherche :", error);
+  
+      let errorMessage = "Impossible de compléter la recherche. Vérifiez votre connexion ou changez votre itinéraire.";
+  
+      if (error.message) {
+        errorMessage += `<br><small class="text-muted">${error.message}</small>`;
+      }
+  
       this.resultsTarget.innerHTML = `
-        <p class="text-danger">Impossible de compléter la recherche. Vérifiez votre connexion ou réessayez plus tard.</p>
+        <div class="alert alert-danger" role="alert">
+          ${errorMessage}
+        </div>
       `;
     }
   }
+  
+  /**
+   * Gère les erreurs HTTP en récupérant le message d'erreur approprié.
+   */
+  async handleErrorResponse(response) {
+    let errorMessage = "Une erreur inconnue s'est produite.";
+  
+    if (response.status === 404) {
+      errorMessage = "Aucun trajet trouvé pour les critères spécifiés.";
+    } else if (response.status === 400) {
+      errorMessage = "Paramètres invalides. Vérifiez les données saisies.";
+    } else if (response.status === 500) {
+      // Vérifie si le serveur retourne du JSON avec un message d'erreur
+      if (response.headers.get("content-type")?.includes("application/json")) {
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.error || "Erreur interne du serveur lors de la recherche.";
+        } catch (e) {
+          errorMessage = "Erreur interne du serveur, impossible de récupérer les détails.";
+        }
+      } else {
+        errorMessage = "Erreur interne du serveur.";
+      }
+    } else {
+      errorMessage = `Erreur serveur : ${response.status}`;
+    }
+  
+    return new Error(errorMessage);
+  }
+  
 
   // Méthode pour afficher les résultats
   displayResults(results, title) {
