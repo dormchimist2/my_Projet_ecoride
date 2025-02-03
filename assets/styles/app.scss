@@ -148,3 +148,114 @@ body {
     font-size: 1.2rem;
     margin-top: 20px;
 }
+//****section menu********************************************
+.collapse {
+    display: none;
+}
+
+.collapse.show {
+    display: block;
+}
+/* Mon Site dans un cercle */
+.site-circle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100px; /* Taille du cercle */
+    height: 100px;
+    border-radius: 50%; /* Cercle parfait */
+    overflow: hidden; /* Empêche l’image de dépasser */
+    border: 2px solid transparent;
+    transition: border-color 0.3s ease;
+}
+
+.site-circle img {
+    width: 100%; /* Ajuste à la taille du parent */
+    height: 100%; /* Ajuste à la taille du parent */
+    object-fit: cover; /* Empêche la déformation */
+    border-radius: 50%; /* Assure que l’image reste ronde */
+}
+
+
+/* Connexion / Déconnexion dans un cercle */
+.menu-circle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100px;
+    height: 100px;
+    background-color: #4B7F52;
+    border-radius: 50%;
+    text-decoration: none;
+    color: black;
+    font-weight: bold;
+    border: 5px solid transparent;
+    margin-left: 10px;
+    transition: border-color 0.3s ease;
+}
+
+/* Recherche avec icône */
+.search-icon {
+    text-decoration: none;
+    color: black;
+    font-weight: bold;
+    background-color: #4B7F52;
+    border-radius: 20%;
+    width: 8.25rem;
+    margin-right: 20px;
+    transition: border-color 0.3s ease;
+}
+
+/* Effet hover : couleur #117788 */
+.site-circle:hover,
+.menu-circle:hover,
+.menu-item:hover,
+.search-icon:hover {
+    border-color: #4B7F52;
+    background-color: #117788;
+}
+
+//**********************************MENU FOOT
+
+footer {
+    background-color: #117788;
+    padding: 20px;
+    text-align: center;
+}
+
+.footer-nav1 ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.footer-nav1 ul li {
+    display: inline-block;
+}
+
+.footer-nav1 img {
+    width: 40px; /* Taille ajustée pour une meilleure visibilité */
+    height: 40px;
+    transition: transform 0.3s ease;
+}
+
+.footer-nav1 img:hover {
+    transform: scale(1.2); /* Zoom léger au survol */
+}
+
+.footer-nav2 {
+    margin-top: 10px;
+}
+
+.footer-nav2 a {
+    margin: 0 10px;
+    text-decoration: none;
+    color: #f8f8f8;
+    font-weight: bold;
+}
+
+.footer-nav2 a:hover {
+    text-decoration: underline;
+}

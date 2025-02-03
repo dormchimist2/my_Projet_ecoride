@@ -12,42 +12,112 @@
             {{ encore_entry_script_tags('app') }}
         {% endblock %}
     </head>
-    <body>
-        {% block body %}{% endblock %}
-    </body>
-</html>
-<!-- <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="/">Mon Site</a>
-    <div class="collapse navbar-collapse">
-        <ul class="navbar-nav">
-            {% if is_granted('ROLE_ADMIN') %}
-                <li class="nav-item">
-                    <a class="nav-link" href="/admin">Panneau d'administration</a>
-                </li>
-            {% endif %}
+    <header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light px-3" data-controller="menu">
+        <!-- Mon Site dans un cercle -->
+        <a class="navbar-brand site-circle" href="/">
+    <img src="{{ asset('photo_systeme/menu/logo_ecoride.png') }}" alt="Logo EcoRide">
+</a>
 
-            {% if is_granted('ROLE_CONDUCTEUR') %}
-                <li class="nav-item">
-                    <a class="nav-link" href="/conducteur">Zone conducteur</a>
-                </li>
-            {% endif %}
 
-            {% if is_granted('ROLE_PASSAGER') %}
+        <!-- Bouton burger pour mobile -->
+        <button class="navbar-toggler" type="button" data-action="click->menu#toggle" aria-expanded="false">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Contenu du menu -->
+        <div class="collapse navbar-collapse justify-content-center" id="navbarNav" data-menu-target="menu">
+            <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" href="/passager">Zone passager</a>
+                    <a class="nav-link menu-item" href="/">Accueil</a>
                 </li>
-            {% endif %}
+                
+                {% if is_granted('ROLE_ADMIN') %}
+                    <li class="nav-item">
+                        <a class="nav-link menu-item" href="/admin">Panneau d'administration</a>
+                    </li>
+                {% endif %}
+
+                {% if is_granted('ROLE_CONDUCTEUR') %}
+                    {% if app.user %}
+    <li class="nav-item">
+        <a class="nav-link menu-item" href="{{ path('app_profile_show', {'id': app.user.id}) }}">Votre profil</a>
+    </li>
+{% endif %}
+
+                    <li class="nav-item">
+                        <a class="nav-link menu-item" href="/covoiturage">Publier un trajet</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link menu-item" href="/covoiturage">Trajets publiés</a>
+                    </li>
+                {% endif %}
+
+                {% if is_granted('ROLE_PASSAGER') %}
+                    <li class="nav-item">
+                        <a class="nav-link menu-item" href="/passager">/profile/{id}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link menu-item" href="/passager/trouver">Trouver un trajet</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+
+        <!-- Recherche et Connexion à droite -->
+        <div class="d-flex align-items-center">
+            <a class="nav-link menu-item search-icon" href="/search/covoiturage">
+                🔍 Recherche
+            </a>
 
             {% if app.user %}
-                <li class="nav-item">
-                    <a class="nav-link" href="/logout">Déconnexion</a>
-                </li>
+                <a class="nav-link menu-circle" href="/logout">Déconnexion</a>
             {% else %}
-                <li class="nav-item">
-                    <a class="nav-link" href="/login">Connexion</a>
-                </li>
+                <a class="nav-link menu-circle" href="/login">Connexion</a>
             {% endif %}
+        </div>
+    </nav>
+</header>
+
+
+        {% block body %}{% endblock %}
+        <footer>
+        <footer>
+    <nav class="footer-nav1">
+        <p>Suivez-nous sur les réseaux sociaux !</p>
+        <ul>
+            <li>
+                <a href="https://www.facebook.com" target="_blank">
+                    <img src="{{ asset('photo_systeme/menu/Facebook_Circled.png') }}" alt="Facebook">
+                </a>
+            </li>
+            <li>
+                <a href="https://www.instagram.com/votreprofilinstagram" target="_blank">
+                    <img src="{{ asset('photo_systeme/menu/Instagram_Circle.png') }}" alt="Instagram">
+                </a>
+            </li>
+            <li>
+                <a href="https://www.tiktok.com/@votrecomptetiktok" target="_blank">
+                    <img src="{{ asset('photo_systeme/menu/TikTok.png') }}" alt="TikTok">
+                </a>
+            </li>
+            <li>
+                <a href="https://www.linkedin.com/in/votreprofillinkedin" target="_blank">
+                    <img src="{{ asset('photo_systeme/menu/LinkedIn.png') }}" alt="LinkedIn">
+                </a>
+            </li>
         </ul>
-    </div>
-</nav>
--->
+    </nav>
+
+    <nav class="footer-nav2">    
+        <p>© 2025 EcoRIDE. Tous droits réservés.</p> 
+        <a href="mentions.html" target="_blank">Mentions légales</a>
+        <a href="reglement.html" target="_blank">Règlement intérieur</a>
+        <a href="contact.html" target="_blank">Contact: ecoride@hotmail.fr </a>
+    </nav>
+</footer>
+
+        
+        </footer>
+    </body>
+</html>
