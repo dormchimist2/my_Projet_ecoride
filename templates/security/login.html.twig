@@ -18,7 +18,11 @@
                             <div class="alert alert-info text-center">
                                 Vous êtes connecté en tant que {{ app.user.userIdentifier }}. <a href="{{ path('app_logout') }}">Déconnexion</a>
                             </div>
-                        {% endif %}
+                        {% else %}
+                        <div class="alert alert-info text-center">
+                                <p>Aucun utilisateur connecté</p>
+                                </div>
+                                 {% endif %}
 
                         <form method="post">
                             <div class="form-group">

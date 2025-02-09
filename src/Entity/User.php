@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -58,6 +60,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 50)]
     private ?string $pseudo = null;
+
+    /**
+     * @var Collection<int, Voiture>
+     */
+    #[ORM\OneToMany(targetEntity: Voiture::class, mappedBy: 'user')]
+    private Collection $voitures;
+
+    #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
+    private ?PreferenceCdt $preferenceCdt = null;
+
+    public function __construct()
+    {
+        $this->voitures = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -238,6 +254,58 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPseudo(string $pseudo): static
     {
         $this->pseudo = $pseudo;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Voiture>
+     */
+    public function getVoitures(): Collection
+    {
+        return $this->voitures;
+    }
+
+    public function addVoiture(Voiture $voiture): static
+    {
+        if (!$this->voitures->contains($voiture)) {
+            $this->voitures->add($voiture);
+            $voiture->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVoiture(Voiture $voiture): static
+    {
+        if ($this->voitures->removeElement($voiture)) {
+            // set the owning side to null (unless already changed)
+            if ($voiture->getUser() === $this) {
+                $voiture->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getPreferenceCdt(): ?PreferenceCdt
+    {
+        return $this->preferenceCdt;
+    }
+
+    public function setPreferenceCdt(?PreferenceCdt $preferenceCdt): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($preferenceCdt === null && $this->preferenceCdt !== null) {
+            $this->preferenceCdt->setUser(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($preferenceCdt !== null && $preferenceCdt->getUser() !== $this) {
+            $preferenceCdt->setUser($this);
+        }
+
+        $this->preferenceCdt = $preferenceCdt;
 
         return $this;
     }

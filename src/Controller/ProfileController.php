@@ -13,7 +13,7 @@ class ProfileController extends AbstractController
 {
     #[Route('/profile/{id}', name: 'app_profile_show', methods: ['GET'])]
 
-    public function show(int $id, UserInterface $currentUser, EntityManagerInterface $entityManager): Response
+    public function show( $id, UserInterface $currentUser, EntityManagerInterface $entityManager): Response
     {
         // Récupérer l'utilisateur à partir de la base de données
         $user = $entityManager->getRepository(User::class)->find($id);
@@ -30,6 +30,29 @@ class ProfileController extends AbstractController
             // Si l'utilisateur n'est pas le même ou n'est pas administrateur, rediriger
             $this->addFlash('error', 'Vous n\'êtes pas autorisé à voir ce profil.');
             return $this->redirectToRoute('app_home'); // Rediriger vers la page d'accueil ou autre
+        }
+
+        if ($user) {
+            // Vérifier si l'utilisateur a le rôle "ROLE_CONDUCTEUR"
+            if (in_array('ROLE_CONDUCTEUR', $user->getRoles())) {
+                if ($user->getVoitures() === null || $user->getVoitures()->count() === 0) {
+                    return $this->redirectToRoute('ajouter_voiture');
+                }
+                
+                if ($user->getPreferenceCdt() === null) {
+                    return $this->redirectToRoute('modifier_preferences');
+                }
+                
+            
+                // Afficher directement le profil au lieu de rediriger à nouveau
+                return $this->render('profile/show.html.twig', [
+                    'user' => $user, 
+                ]);
+            }
+            
+
+            // Si l'utilisateur n'est pas conducteur, le rediriger ailleurs
+            return $this->redirectToRoute('app_home');
         }
         
         // Si l'utilisateur est autorisé, afficher la vue du profil avec les données de l'utilisateur
