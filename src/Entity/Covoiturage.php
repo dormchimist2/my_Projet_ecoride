@@ -49,6 +49,16 @@ class Covoiturage
     #[ORM\Column]
     private ?float $prix = null;
 
+    #[ORM\ManyToOne(inversedBy: 'covoiturages')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $User = null;
+
+    #[ORM\ManyToOne(inversedBy: 'covoiturages')]
+    private ?Voiture $voiture = null;
+
+    #[ORM\ManyToOne(inversedBy: 'covoiturages')]
+    private ?PreferenceCdt $preferenceCdt = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -146,6 +156,42 @@ class Covoiturage
     public function setPrix(float $prix): static
     {
         $this->prix = $prix;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->User;
+    }
+
+    public function setUser(?User $User): static
+    {
+        $this->User = $User;
+
+        return $this;
+    }
+
+    public function getVoiture(): ?Voiture
+    {
+        return $this->voiture;
+    }
+
+    public function setVoiture(?Voiture $voiture): static
+    {
+        $this->voiture = $voiture;
+
+        return $this;
+    }
+
+    public function getPreferenceCdt(): ?PreferenceCdt
+    {
+        return $this->preferenceCdt;
+    }
+
+    public function setPreferenceCdt(?PreferenceCdt $preferenceCdt): static
+    {
+        $this->preferenceCdt = $preferenceCdt;
 
         return $this;
     }

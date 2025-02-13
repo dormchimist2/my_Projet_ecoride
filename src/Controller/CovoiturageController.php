@@ -54,4 +54,31 @@ class CovoiturageController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+
+        #[Route('/covoiturage/{id}', name: 'covoiturage_detail', methods: ['GET'])]
+        public function detail(int $id, EntityManagerInterface $entityManager): Response
+        {
+            // Récupérer le covoiturage par son ID
+            $covoiturage = $entityManager->getRepository(Covoiturage::class)->find($id);
+    
+            if (!$covoiturage) {
+                $this->addFlash('error', 'Ce covoiturage n\'existe pas.');
+                return $this->redirectToRoute('app_home');
+            }
+    
+            // Récupérer les informations associées
+            $User = $covoiturage->getUser();
+            $voiture = $covoiturage->getVoiture();
+            $preferenceCdt = $User->getPreferenceCdt();
+    
+            return $this->render('covoiturage/detail.html.twig', [
+                'covoiturage' => $covoiturage,
+                'conducteur' => $User,
+                'voiture' => $voiture,
+                'preferences' => $preferenceCdt,
+            ]);
+        }
+    
+    
+
 }

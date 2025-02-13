@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\PreferenceCdtRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PreferenceCdtRepository::class)]
@@ -38,6 +40,17 @@ private ?bool $accepteAnimauxG = null;
 
     #[ORM\OneToOne(inversedBy: 'preferenceCdt', cascade: ['persist', 'remove'])]
     private ?User $user = null;
+
+    /**
+     * @var Collection<int, Covoiturage>
+     */
+    #[ORM\OneToMany(targetEntity: Covoiturage::class, mappedBy: 'preferenceCdt')]
+    private Collection $covoiturages;
+
+    public function __construct()
+    {
+        $this->covoiturages = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -137,6 +150,36 @@ private ?bool $accepteAnimauxG = null;
     public function setUser(?User $user): static
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Covoiturage>
+     */
+    public function getCovoiturages(): Collection
+    {
+        return $this->covoiturages;
+    }
+
+    public function addCovoiturage(Covoiturage $covoiturage): static
+    {
+        if (!$this->covoiturages->contains($covoiturage)) {
+            $this->covoiturages->add($covoiturage);
+            $covoiturage->setPreferenceCdt($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCovoiturage(Covoiturage $covoiturage): static
+    {
+        if ($this->covoiturages->removeElement($covoiturage)) {
+            // set the owning side to null (unless already changed)
+            if ($covoiturage->getPreferenceCdt() === $this) {
+                $covoiturage->setPreferenceCdt(null);
+            }
+        }
 
         return $this;
     }

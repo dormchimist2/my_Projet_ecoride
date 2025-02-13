@@ -70,9 +70,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
     private ?PreferenceCdt $preferenceCdt = null;
 
+    /**
+     * @var Collection<int, Covoiturage>
+     */
+    #[ORM\OneToMany(targetEntity: Covoiturage::class, mappedBy: 'User', orphanRemoval: true)]
+    private Collection $covoiturages;
+
     public function __construct()
     {
         $this->voitures = new ArrayCollection();
+        $this->covoiturages = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -306,6 +313,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         $this->preferenceCdt = $preferenceCdt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Covoiturage>
+     */
+    public function getCovoiturages(): Collection
+    {
+        return $this->covoiturages;
+    }
+
+    public function addCovoiturage(Covoiturage $covoiturage): static
+    {
+        if (!$this->covoiturages->contains($covoiturage)) {
+            $this->covoiturages->add($covoiturage);
+            $covoiturage->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCovoiturage(Covoiturage $covoiturage): static
+    {
+        if ($this->covoiturages->removeElement($covoiturage)) {
+            // set the owning side to null (unless already changed)
+            if ($covoiturage->getUser() === $this) {
+                $covoiturage->setUser(null);
+            }
+        }
 
         return $this;
     }

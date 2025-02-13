@@ -1,0 +1,190 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} <div>Détail du Covoiturage</div> {% endblock %}
+
+{% block body %}
+<div class=" text-center text-primary mb-6">
+    <h1>Détail du Covoiturage</h1>
+</div>
+    <div class="container my-4 p-3 border rounded shadow-sm bg-light">
+        <div class="text-center mb-4">
+            <h2 class="text-primary">{{ covoiturage.dateDepart|date('d F Y', 'Europe/Paris')|trans }}</h2>
+        </div>
+        
+        <div class="d-flex align-items-center justify-content-between">
+            <!-- Départ -->
+            <div class="text-start position-relative">
+                <h4 class="fw-bold text-primary text-center">{{ covoiturage.pointDepart }}</h4>
+                <div class="d-flex align-items-center">
+                    <div class="circle"></div>
+                    <p class="text-muted mb-0 ms-2"><i class="bi bi-clock"></i> {{ covoiturage.heureDepart|date('H:i') }}</p>
+                </div>
+            </div>
+
+            <!-- Ligne entre les points -->
+            <div class="flex-grow-1 position-relative">
+                <div class="line"></div>
+            </div>
+
+            <!-- Arrivée -->
+            <div class="text-end position-relative">
+                <h4 class="fw-bold text-success text-center">{{ covoiturage.pointArrivee }}</h4>
+                <div class="d-flex align-items-center justify-content-end">
+                    <p class="text-muted mb-0 me-2"><i class="bi bi-clock"></i> {{ covoiturage.heureArrivee|date('H:i') }}</p>
+                    <div class="circle"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-around align-items-center my-3">
+            <!-- Places disponibles -->
+            <div class="text-center">
+                <div class="seat-icon">
+                    <img src="{{ asset('photo_systeme/covoiturage/seat.png') }}" alt="Siège" class="seat-img">
+                    <span class="seat-text">{{ covoiturage.nbPlace }}</span>
+                </div>
+                <p class="text-dark fw-bold mt-2">Places disponibles</p>
+            </div>
+
+            <!-- Prix -->
+            <div class="text-center">
+                <div class="ticket-icon">
+                    <img src="{{ asset('photo_systeme/covoiturage/ticket.png') }}" alt="Billet" class="ticket-img">
+                </div>
+                <span class="text-dark fw-bold mt-2">{{ covoiturage.prix }} </span>
+                <p class="text-dark fw-bold mt-2">credit</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Informations véhicule -->
+    <div class="container my-4 p-4 rounded shadow-sm vehicle-block">
+        <h3 class="text-center vehicle-title">Le véhicule du covoiturage</h3>
+        
+        <div class="d-flex justify-content-between align-items-center mt-3">
+            <!-- Marque -->
+            <div class="vehicle-info">
+                <h5 class="vehicle-label">Marque</h5>
+                <p class="vehicle-value">reno</p>
+            </div>
+            
+            <!-- Modèle -->
+            <div class="vehicle-info">
+                <h5 class="vehicle-label">Modèle</h5>
+                <p class="vehicle-value">zoe</p>
+            </div>
+
+            <!-- Moteur -->
+            <div class="vehicle-info">
+                <h5 class="vehicle-label">Moteur</h5>
+                <p class="vehicle-value">electrique</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Informations conducteur -->
+    <div class="container my-4 p-4 rounded shadow-sm conducteur-block">
+        <h3 class="text-center conducteur-title">Conducteur</h3>
+        
+        <!-- Photo et pseudo -->
+        <div class="d-flex align-items-center justify-content-center mt-3">
+            <!-- Photo Conducteur -->
+            <img src="{{ covoiturage.user.photo is not empty ? asset('uploads/' ~ covoiturage.user.photo) : asset('uploads/images/default-avatar.png') }}"  
+                 alt="Photo de {{ covoiturage.user.pseudo }}" 
+                 class="conducteur-photo">
+            
+            <!-- Pseudo dans un rectangle -->
+            <div class="conducteur-info">
+                <h5 class="conducteur-pseudo">{{ covoiturage.user.pseudo }}</h5>
+            </div>
+        </div>
+
+        <!-- Sous-titre préférences -->
+        <h4 class="text-center conducteur-pref-title mt-4">
+            Préférences de {{ covoiturage.user.pseudo }}
+        </h4>
+
+        {% if covoiturage.user.preferenceCdt is not null %}
+            <div class="row">
+                <div class="col-md-8 offset-md-2">
+                    <div class="list-group">
+                        <!-- Fumeurs acceptés -->
+                        <div class="list-group-item d-flex justify-content-between align-items-center mb-3">
+                            <div>
+        <img src="{{ asset('photo_systeme/icons/smoking.png') }}" alt="Fumeurs acceptés" class="me-2" style="width: 20px; height: 20px;"> Les fumeurs sont les bien venu
+    </div>
+                            <span class="badge {{ covoiturage.user.preferenceCdt.accepteFumeurs ? 'bg-success' : 'bg-danger' }}">
+                                {{ covoiturage.user.preferenceCdt.accepteFumeurs ? 'Oui' : 'Non' }}
+                            </span>
+                        </div>
+
+                        <!-- Grands animaux acceptés -->
+                        <div class="list-group-item d-flex justify-content-between align-items-center mb-3">
+                           <div>
+        <img src="{{ asset('photo_systeme/icons/paw-icon.png') }}" alt=" animaux " class="me-2" style="width: 20px; height: 20px;"> Accepte les grand animaux
+    </div>
+                            <span class="badge {{ covoiturage.user.preferenceCdt.accepteAnimauxG ? 'bg-success' : 'bg-danger' }}">
+                                {{ covoiturage.user.preferenceCdt.accepteAnimauxG ? 'Oui' : 'Non' }}
+                            </span>
+                        </div>
+
+                        <!-- Petits animaux acceptés -->
+                        <div class="list-group-item d-flex justify-content-between align-items-center mb-3">
+                           <div>
+        <img src="{{ asset('photo_systeme/icons/pawp-icon.png') }}" alt=" animaux " class="me-2" style="width: 20px; height: 20px;"> Accepte les Petits animaux
+    </div>
+                            <span class="badge {{ covoiturage.user.preferenceCdt.accepteAnimauxP ? 'bg-success' : 'bg-danger' }}">
+                                {{ covoiturage.user.preferenceCdt.accepteAnimauxP ? 'Oui' : 'Non' }}
+                            </span>
+                        </div>
+
+                        <!-- Musique autorisée -->
+                        <div class="list-group-item d-flex justify-content-between align-items-center mb-3">
+                            <div>
+        <img src="{{ asset('photo_systeme/icons/music.png') }}" alt="clef sol" class="me-2" style="width: 20px; height: 20px;"> Accepte les DJ acceptés
+    </div>
+                            <span class="badge {{ covoiturage.user.preferenceCdt.musiqueAutorisee ? 'bg-success' : 'bg-danger' }}">
+                                {{ covoiturage.user.preferenceCdt.musiqueAutorisee ? 'Oui' : 'Non' }}
+                            </span>
+                        </div>
+
+                        <!-- Discussion autorisée -->
+                        <div class="list-group-item d-flex justify-content-between align-items-center mb-3">
+                           <div>
+        <img src="{{ asset('photo_systeme/icons/babble.png') }}" alt="bulle" class="me-2" style="width: 20px; height: 20px;"> Ouver au discution
+    </div>
+                            <span class="badge {{ covoiturage.user.preferenceCdt.discussionAutorisee ? 'bg-success' : 'bg-danger' }}">
+                                {{ covoiturage.user.preferenceCdt.discussionAutorisee ? 'Oui' : 'Non' }}
+                            </span>
+                        </div>
+
+                        <!-- Siège bébé disponible -->
+                        <div class="list-group-item d-flex justify-content-between align-items-center mb-3">
+                           <div>
+        <img src="{{ asset('photo_systeme/icons/baby-chair.png') }}" alt="chaise bébé" class="me-2" style="width: 20px; height: 20px;"> Une chaise bébé disponible
+    </div>
+                            <span class="badge {{ covoiturage.user.preferenceCdt.siegeBebe ? 'bg-success' : 'bg-danger' }}">
+                                {{ covoiturage.user.preferenceCdt.siegeBebe ? 'Oui' : 'Non' }}
+                            </span>
+                        </div>
+
+                        <!-- Autres préférences -->
+                        <div class="list-group-item">
+                            <div>
+                                <p class="vehicle-value">Autres préférences</p> 
+                            </div>
+                            <p>{{ covoiturage.user.preferenceCdt.adPreference ?: 'Aucune préférence supplémentaire' }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="alert alert-warning" role="alert">
+                Aucune préférence enregistrée pour ce covoiturage.
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Retour -->
+    <a href="{{ path('app_home') }}" class="btn btn-primary mt-4">Retour</a>
+{% endblock %}
