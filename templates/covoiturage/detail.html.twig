@@ -65,19 +65,25 @@
             <!-- Marque -->
             <div class="vehicle-info">
                 <h5 class="vehicle-label">Marque</h5>
-                <p class="vehicle-value">reno</p>
+                {% for voiture in covoiturage.user.voitures %}
+    <p class="vehicle-value"> {{ voiture.marque }}</p>
+{% endfor %}
             </div>
             
             <!-- Modèle -->
             <div class="vehicle-info">
                 <h5 class="vehicle-label">Modèle</h5>
-                <p class="vehicle-value">zoe</p>
+                    {% for voiture in covoiturage.user.voitures %}
+    <p class="vehicle-value"> {{ voiture.modele }}</p>
+{% endfor %}
             </div>
 
             <!-- Moteur -->
             <div class="vehicle-info">
                 <h5 class="vehicle-label">Moteur</h5>
-                <p class="vehicle-value">electrique</p>
+                     {% for voiture in covoiturage.user.voitures %}
+    <p class="vehicle-value"> {{ voiture.moteur }}</p>
+{% endfor %}
             </div>
         </div>
     </div>
