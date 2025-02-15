@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %} <div>Détail du Covoiturage</div> {% endblock %}
+{% block title %} Détail du Covoiturage {% endblock %}
 
 {% block body %}
 <div class=" text-center text-primary mb-6">
@@ -191,6 +191,16 @@
         {% endif %}
     </div>
 
-    <!-- Retour -->
-    <a href="{{ path('app_home') }}" class="btn btn-primary mt-4">Retour</a>
+    <!-- reserver -->
+    <div class="text-center mt-4">
+    <button class="btn btn-success" 
+            data-controller="reservation"
+            data-action="click->reservation#openReservationForm"
+            data-trajet-id="{{ covoiturage.id }}"
+            data-trajet-places="{{ covoiturage.nbPlace }}">
+        Réserver
+    </button>
+</div>
+<div id="reserve-container-{{ covoiturage.id }}"></div>
+
 {% endblock %}

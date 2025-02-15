@@ -16,7 +16,10 @@ body {
 .hidden {
     display: none !important;
 }
-
+.btn {
+    display: block !important;
+  }
+  
 
 // Section photo de profil
 #image-display {

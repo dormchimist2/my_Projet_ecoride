@@ -90,51 +90,55 @@ export default class extends Controller {
     return new Error(errorMessage);
   }
   
-
-  // Méthode pour afficher les résultats
-  displayResults(results, title) {
-    this.resultsTarget.innerHTML = `
-      <h4>${title}</h4>
-      <ul class="trajet-list">
-        ${results
-          .map(
-            (trajet) => `
-              <div class="card mb-3">
-                <div class="card-header bg-primary text-white">
-                  <strong>${trajet.pointDepart} ➡️ ${trajet.pointArrivee}</strong>
-                </div>
-                <div class="card-body">
-                  <ul class="list-group list-group-flush">
-                    
-                  <li class="list-group-item">
-                      <strong>Date de départ :</strong> 
-                      <span>${trajet.dateDepart}</span> à <span>${trajet.heureDepart || "Non spécifiée"}</span>
-                    </li>
-
-                    <li class="list-group-item">
-                      <strong>Date d'arrivée :</strong> 
-                      <span>${trajet.dateArrivee}</span> à <span>${trajet.heureArrivee || "Non spécifiée"}</span>
-                    </li>
-                    
-                    <li class="list-group-item">
-                      <strong>Places disponibles :</strong> 
-                      <span>${trajet.nbPlace}</span>
-                    </li>
-                    <li class="list-group-item">
-                      <strong>Prix :</strong> 
-                      <span>${trajet.prix}</span>
-                    </li>
-                  </ul>
-                </div>
-                <div class="card-footer text-end">
-                  <button class="btn btn-primary">Réserver</button>
-                </div>
+// Méthode pour afficher les résultats
+displayResults(results, title) {
+  this.resultsTarget.innerHTML = `
+    <h4>${title}</h4>
+    <ul class="trajet-list">
+      ${results
+        .map(
+          (trajet) => `
+            <div class="card mb-3">
+              <div class="card-header bg-primary text-white">
+                <strong>${trajet.pointDepart} ➡️ ${trajet.pointArrivee}</strong>
               </div>
-            `
-          )
-          .join("")}
-      </ul>
-    `;
-    this.noResultsTarget.classList.add("hidden");
-  }
+              <div class="card-body">
+                <ul class="list-group list-group-flush">
+                  <li class="list-group-item">
+                    <strong>Date de départ :</strong> 
+                    <span>${trajet.dateDepart || "Non spécifiée"}</span> à 
+                    <span>${trajet.heureDepart || "Non spécifiée"}</span>
+                  </li>
+
+                  <li class="list-group-item">
+                    <strong>Places disponibles :</strong> 
+                    <span>${trajet.nbPlace || "Non spécifié"}</span>
+                  </li>
+
+                  <li class="list-group-item">
+                    <strong>Prix :</strong> 
+                    <span>${trajet.prix ? `${trajet.prix}` : "Non spécifié"}</span>
+                  </li>
+                </ul>
+              </div>
+              <div class="card-footer text-end">
+                <a href="/covoiturage/${trajet.id}" class="btn btn-primary">Détail</a>
+                <button class="btn btn-success" 
+                        data-controller="reservation"
+                        data-action="click->reservation#openReservationForm"
+                        data-trajet-id="${trajet.id}"
+                        data-trajet-places="${trajet.nbPlace || 1}">
+                  Réserver
+                </button>
+                <div id="reserve-container-${trajet.id}"></div>
+              </div>
+            </div>
+          `
+        )
+        .join("")}
+    </ul>
+  `;
+  this.noResultsTarget.classList.add("hidden");
+}
+
 }
