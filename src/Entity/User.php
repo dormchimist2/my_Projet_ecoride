@@ -76,6 +76,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Covoiturage::class, mappedBy: 'User', orphanRemoval: true)]
     private Collection $covoiturages;
 
+    #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
+    private ?Compte $compte;
+
     public function __construct()
     {
         $this->voitures = new ArrayCollection();
@@ -343,6 +346,28 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $covoiturage->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCompte(): ?Compte
+    {
+        return $this->compte;
+    }
+
+    public function setCompte(?Compte $compte): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($compte === null && $this->compte !== null) {
+            $this->compte->setUser(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($compte !== null && $compte->getUser() !== $this) {
+            $compte->setUser($this);
+        }
+
+        $this->compte = $compte;
 
         return $this;
     }

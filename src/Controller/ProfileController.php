@@ -51,8 +51,6 @@ class ProfileController extends AbstractController
             }
             
 
-            // Si l'utilisateur n'est pas conducteur, le rediriger ailleurs
-            return $this->redirectToRoute('app_home');
         }
         
         // Si l'utilisateur est autorisé, afficher la vue du profil avec les données de l'utilisateur

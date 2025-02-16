@@ -45,6 +45,26 @@
             </div>
         </div>
     </div>
+    <!--section compte credit utilisateur-->
+    <div class="card text-white {% if app.user.compte and app.user.compte.solde > 0 %}bg-success{% else %}bg-danger{% endif %} mb-3" style="max-width: 18rem;">
+    <div class="card-header">
+        💰 {% if app.user.roles is defined and 'ROLE_CONDUCTEUR' in app.user.roles or 'ROLE_ADMIN' in app.user.roles %}
+            Mes gains
+        {% else %}
+            Mon solde
+        {% endif %}
+    </div>
+    <div class="card-body">
+        {% if app.user.compte is not null %}
+            <h5 class="card-title">
+                <i class="bi bi-wallet2"></i> {{ app.user.compte.solde }} crédits
+            </h5>
+        {% else %}
+            <p class="card-text">Aucun compte associé.</p>
+        {% endif %}
+    </div>
+</div>
+
 
     <!-- Flash messages -->
     {% if app.session.flashbag.has('error') %}
