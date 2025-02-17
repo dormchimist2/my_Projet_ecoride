@@ -31,12 +31,20 @@
                 <li class="nav-item">
                     <a class="nav-link menu-item" href="/">Accueil</a>
                 </li>
+        
                 
                 {% if is_granted('ROLE_ADMIN') %}
-                    <li class="nav-item">
-                        <a class="nav-link menu-item" href="/admin">Panneau d'administration</a>
-                    </li>
-                {% endif %}
+    <li class="nav-item">
+        <a class="nav-link menu-item" href="{{ path('app_profile_show', {'id': app.user.id}) }}">Votre profil</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link menu-item" href="{{ path('covoiturage_index') }}">Liste des covoiturages</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link menu-item" href="{{ path('app_users_list') }}">Liste des utilisateurs</a>
+    </li>
+{% endif %}
+
 
                 {% if is_granted('ROLE_CONDUCTEUR') %}
                     {% if app.user %}
@@ -115,9 +123,9 @@
 
     <nav class="footer-nav2">    
         <p>© 2025 EcoRIDE. Tous droits réservés.</p> 
-        <a href="mentions.html" target="_blank">Mentions légales</a>
-        <a href="reglement.html" target="_blank">Règlement intérieur</a>
-        <a href="contact.html" target="_blank">Contact: ecoride@hotmail.fr </a>
+        <a class="nav-link" href="{{ path('app_maintenance') }}" target="_blank">Mentions légales</a>
+        <a class="nav-link" href="{{ path('app_maintenance') }}" target="_blank">Règlement intérieur</a>
+        <a class="nav-link" href="{{ path('app_maintenance') }}" target="_blank">Contact: ecoride@hotmail.fr </a>
     </nav>
 </footer>
 

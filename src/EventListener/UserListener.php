@@ -1,16 +1,16 @@
 <?php
 namespace App\EventListener;
 
-use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\ORM\Event\PostPersistEventArgs;
 use App\Entity\User;
 use App\Entity\Compte;
 
 class UserListener
 {
-    public function postPersist(LifecycleEventArgs $event): void
+    public function postPersist(PostPersistEventArgs $event): void
     {
         // Récupérer l'entité User depuis l'argument $event
-        $user = $event->getEntity(); // On récupère l'entité persistée
+        $user = $event->getObject(); 
 
         // Vérifier si l'entité est bien une instance de User
         if ($user instanceof User) {
