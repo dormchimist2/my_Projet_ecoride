@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Page en construction{% endblock %}
+
+{% block body %}
+<div class="container text-center mt-5">
+    <h1 class="display-4">🚧 Page en construction 🚧</h1>
+    <p class="lead">Cette fonctionnalité est en cours de développement. Revenez bientôt !</p>
+    <img src="{{ asset('photo_systeme/maintenance/maintenance.png') }}" alt="En construction" class="img-fluid mt-3">
+    <br>
+    <a href="{{ path('app_home') }}" class="btn btn-success mt-4">Retour à l'accueil</a>
+</div>
+<script>
+    // Passe l'URL de la route "app_maintenance" à JavaScript
+    var maintenanceUrl = "{{ path('app_maintenance') }}";
+</script>
+
+{% endblock %}

@@ -1,0 +1,79 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Profil de {{ user.firstName }}{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+
+    <!-- Section photo de profil -->
+    <div id="photopresentation" class="text-center">
+        <h1>{{ user.pseudo }}</h1>
+
+        <div id="image-display" class="rounded-circle overflow-hidden shadow-lg mx-auto">
+            <div class="photo-gallery">
+                <div class="photo-item">
+                    <img src="{{ user.photo is not empty ? asset('uploads/' ~ user.photo) : asset('uploads/images/default-avatar.png') }}" 
+                         alt="Photo de {{ user.pseudo }}" class="img-fluid">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Informations utilisateur -->
+    <div class="text-center mt-4">
+        <h3>{{ user.firstName }} {{ user.lastName }}</h3>
+        <div class="card shadow-lg border-0 mt-3">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <p><i class="bi bi-envelope-fill"></i> <strong>Email :</strong> {{ user.email }}</p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <p><i class="bi bi-phone-fill"></i> <strong>Numéro de téléphone :</strong> {{ user.phoneNumber }}</p>
+                    </div>
+                    <div class="col-md-6">
+                    {% set readable_roles = {
+                                'ROLE_USER': 'Utilisateur',
+                                'ROLE_ADMIN': 'Administrateur',
+                                'ROLE_CONDUCTEUR': 'Conducteur',
+                                'ROLE_PASSAGER': 'Passager'
+                            } %}
+                        <p><i class="bi bi-person-badge"></i> <strong>Rôles :</strong> 
+                        {{ user.roles|map(role => readable_roles[role]|default(role))|join(', ') }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--section compte credit utilisateur-->
+    <div class="card text-white {% if app.user.compte and app.user.compte.solde > 0 %}bg-success{% else %}bg-danger{% endif %} mb-3" style="max-width: 18rem;">
+    <div class="card-header">
+        💰 {% if app.user.roles is defined and 'ROLE_CONDUCTEUR' in app.user.roles or 'ROLE_ADMIN' in app.user.roles %}
+            Mes gains
+        {% else %}
+            Mon solde
+        {% endif %}
+    </div>
+    <div class="card-body">
+        {% if app.user.compte is not null %}
+            <h5 class="card-title">
+                <i class="bi bi-wallet2"></i> {{ app.user.compte.solde }} crédits
+            </h5>
+        {% else %}
+            <p class="card-text">Aucun compte associé.</p>
+        {% endif %}
+    </div>
+</div>
+
+
+    <!-- Flash messages -->
+    {% if app.session.flashbag.has('error') %}
+        <div class="alert alert-danger mt-4">
+            {% for message in app.session.flashbag.get('error') %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}

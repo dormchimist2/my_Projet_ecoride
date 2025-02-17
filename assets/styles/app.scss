@@ -1,0 +1,426 @@
+/// Variables globales
+$primary: #117788;
+$secondary: #e4e4e4;
+$avatar-size: 150px;
+
+// Importation des styles Bootstrap
+@import "~bootstrap/scss/bootstrap";
+
+// Styles globaux
+body {
+    background-color: #f4f7fc;
+    font-family: 'Inter', sans-serif;
+}
+
+//----search trajet
+.hidden {
+    display: none !important;
+}
+.btn {
+    display: block !important;
+  }
+
+  //*************formulaire de reservation
+  /* Ajoute une nouvelle classe pour masquer le formulaire de réservation */
+.reservation-hidden {
+    display: none !important;
+}
+
+  
+
+// Section photo de profil
+#image-display {
+    border: 3px solid #fff;
+    width: $avatar-size;
+    height: $avatar-size;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin: 0 auto;
+}
+
+#photopresentation h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #333;
+    margin-top: 20px;
+    background-color: #0d4d00;
+    color: #fff;
+    border-radius: 20px;
+    padding: 12px 25px;
+    text-transform: uppercase;
+}
+
+#photopresentation {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+// Informations utilisateur
+.card {
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    padding: 20px;
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.card p {
+    font-size: 1.1rem;
+}
+
+.card i {
+    color: $primary;
+    margin-right: 10px;
+}
+
+.card .row {
+    margin-bottom: 10px;
+}
+
+.card .col-md-6 {
+    display: flex;
+    align-items: center;
+}
+
+.card .mb-3 {
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.alert {
+    background-color: #ff4d4d;
+    color: white;
+    border-radius: 5px;
+    font-size: 1.1rem;
+    padding: 15px;
+    margin-top: 20px;
+}
+
+@media (max-width: 768px) {
+    #image-display {
+        width: 120px;
+        height: 120px;
+    }
+
+    #photopresentation h1 {
+        font-size: 2rem;
+    }
+
+    .card-body {
+        padding: 15px;
+    }
+
+    .alert {
+        font-size: 1rem;
+    }
+}
+//******section page home----
+.hero-container {
+    position: relative;
+    width: 100%;
+    height: 80vh; /* Hauteur adaptée */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+}
+
+.hero-title, .hero-subtitle, .hero-text {
+    background-color: rgba(75, 127, 82, 0.8); /* Vert #4B7F52 à 80% */
+    color: white;
+    padding: 15px 20px;
+    border-radius: 10px;
+    max-width: 80%;
+}
+
+.hero-title {
+    font-size: 3rem;
+    font-weight: bold;
+}
+
+.hero-subtitle {
+    font-size: 2rem;
+    margin-top: 10px;
+}
+
+.hero-text {
+    font-size: 1.2rem;
+    margin-top: 20px;
+}
+//****section menu********************************************
+.collapse {
+    display: none;
+}
+
+.collapse.show {
+    display: block;
+}
+/* Mon Site dans un cercle */
+.site-circle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100px; /* Taille du cercle */
+    height: 100px;
+    border-radius: 50%; /* Cercle parfait */
+    overflow: hidden; /* Empêche l’image de dépasser */
+    border: 2px solid transparent;
+    transition: border-color 0.3s ease;
+}
+
+.site-circle img {
+    width: 100%; /* Ajuste à la taille du parent */
+    height: 100%; /* Ajuste à la taille du parent */
+    object-fit: cover; /* Empêche la déformation */
+    border-radius: 50%; /* Assure que l’image reste ronde */
+}
+
+
+/* Connexion / Déconnexion dans un cercle */
+.menu-circle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100px;
+    height: 100px;
+    background-color: #4B7F52;
+    border-radius: 50%;
+    text-decoration: none;
+    color: black;
+    font-weight: bold;
+    border: 5px solid transparent;
+    margin-left: 10px;
+    transition: border-color 0.3s ease;
+}
+
+/* Recherche avec icône */
+.search-icon {
+    text-decoration: none;
+    color: black;
+    font-weight: bold;
+    background-color: #4B7F52;
+    border-radius: 20%;
+    width: 8.25rem;
+    margin-right: 20px;
+    transition: border-color 0.3s ease;
+}
+
+/* Effet hover : couleur #117788 */
+.site-circle:hover,
+.menu-circle:hover,
+.menu-item:hover,
+.search-icon:hover {
+    border-color: #4B7F52;
+    background-color: #117788;
+}
+
+//**********************************MENU FOOT
+
+footer {
+    background-color: #117788;
+    padding: 20px;
+    text-align: center;
+}
+
+.footer-nav1 ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.footer-nav1 ul li {
+    display: inline-block;
+}
+
+.footer-nav1 img {
+    width: 40px; /* Taille ajustée pour une meilleure visibilité */
+    height: 40px;
+    transition: transform 0.3s ease;
+}
+
+.footer-nav1 img:hover {
+    transform: scale(1.2); /* Zoom léger au survol */
+}
+
+.footer-nav2 {
+    margin-top: 10px;
+}
+
+.footer-nav2 a {
+    margin: 0 10px;
+    text-decoration: none;
+    color: #f8f8f8;
+    font-weight: bold;
+}
+
+.footer-nav2 a:hover {
+    text-decoration: underline;
+}
+//********************************detaille covoiturage
+.line {
+    width: 100%; /* La ligne prend toute la largeur disponible */
+    height: 4px; /* Épaisseur */
+    background-color: #117788; /* Couleur */
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    z-index: 1;
+}
+
+.circle {
+    width: 14px;
+    height: 14px;
+    background-color: black;
+    border-radius: 50%;
+    z-index: 2;
+}
+
+
+.circle.left {
+    left: -10px; /* Position du rond de gauche */
+}
+
+.circle.right {
+    right: +10px; /* Position du rond de droite */
+}
+
+.seat-icon, .ticket-icon {
+    position: relative;
+    display: inline-block;
+}
+
+.seat-img, .ticket-img {
+    width: 60px; /* Ajuste la taille de l'image */
+    height: auto;
+    filter: invert(37%) sepia(57%) saturate(681%) hue-rotate(19deg) brightness(90%) contrast(93%);
+}
+
+.seat-text, .ticket-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: black;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.vehicle-block {
+    background-color: rgba(75, 127, 82, 0.4); /* Vert 40% */
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.vehicle-title {
+    color: #117788;
+    font-weight: bold;
+}
+
+.vehicle-info {
+    background-color: #4B7F52; /* Vert 100% */
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    width: 30%; /* Pour un alignement équilibré */
+}
+
+.vehicle-label {
+    color: black;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.vehicle-value {
+    color: white;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.conducteur-block {
+    background-color: rgba(75, 127, 82, 0.4); 
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.conducteur-title {
+    color: #117788;
+    font-weight: bold;
+}
+
+.conducteur-photo {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 20px;
+}
+
+.conducteur-info {
+    background-color: #4B7F52; /* Vert 100% */
+    padding: 10px 20px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.conducteur-pseudo {
+    color: white;
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin: 0;
+}
+
+.conducteur-pref-title {
+    color: black;
+    font-weight: bold;
+}
+
+.conducteur-pref-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    margin-top: 10px;
+}
+
+.pref-icon {
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+}
+
+//***************************
+/* Badge "Oui" en vert */
+.badge.bg-success {
+    background-color: #4B7F52 !important;
+}
+
+/* Badge "Non" en rouge */
+.badge.bg-danger {
+    background-color: #C0362C !important;
+}
+
+/* Style pour les icônes */
+.fas {
+    font-size: 1.2em;
+    color: #007bff;
+}
+
+/* Mise en surbrillance de la carte au survol */
+.list-group-item {
+    background-color:rgba(75, 127, 82, 0.4);
+   
+}

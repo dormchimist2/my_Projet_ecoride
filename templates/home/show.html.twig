@@ -1,0 +1,81 @@
+{# templates/home/show.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Bienvenue sur EcoRide{% endblock %}
+
+{% block body %}
+    <div class="hero-container" style="background-image: url('{{ asset('uploads/images/acceil.png') }}'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+        <h1 class="hero-title">Bienvenue sur EcoRide</h1>
+        <h2 class="hero-subtitle">Avec EcoRide, covoiturez aujourd'hui, sauvez demain.</h2>
+        <p class="hero-text lead">
+            EcoRide est une plateforme de covoiturage innovante et engagée pour un avenir plus respectueux de l’environnement. 
+            Nous croyons que chaque trajet partagé est une opportunité de réduire notre empreinte carbone, 
+            de désengorger les routes et de créer des liens entre les personnes. 
+            Ensemble, faisons du covoiturage un réflexe écoresponsable. 
+            <strong>Rejoignez le mouvement dès aujourd’hui avec EcoRide !</strong>
+        </p>
+    </div>
+
+    {# Inclusion du formulaire de recherche #}
+    <div class="container my-5">
+       <div data-controller="search-covoiturage" class="container my-5">
+    <h1 class="text-center mb-4">Rechercher un covoiturage</h1>
+    <form data-action="submit->search-covoiturage#search" class="row g-3">
+        <!-- Ville de départ -->
+        <div class="col-md-6">
+            <label for="pointDepart" class="form-label">Ville de départ</label>
+            <input 
+                data-search-covoiturage-target="pointDepart" 
+                type="text" 
+                id="pointDepart" 
+                class="form-control" 
+                placeholder="Exemple : Paris" 
+                required 
+            />
+        </div>
+
+        <!-- Ville de destination -->
+        <div class="col-md-6">
+            <label for="pointArrivee" class="form-label">Ville de destination</label>
+            <input 
+                data-search-covoiturage-target="pointArrivee" 
+                type="text" 
+                id="pointArrivee" 
+                class="form-control" 
+                placeholder="Exemple : Lyon" 
+                required 
+            />
+        </div>
+
+        <!-- Date de départ -->
+        <div class="col-md-6">
+            <label for="dateDepart" class="form-label">Date de départ</label>
+            <input 
+                data-search-covoiturage-target="dateDepart" 
+                type="date" 
+                id="dateDepart" 
+                class="form-control"
+            />
+        </div>
+
+        <!-- Heure de départ -->
+        <div class="col-md-6">
+            <label for="heureDepart" class="form-label">Heure de départ</label>
+            <input 
+                data-search-covoiturage-target="heureDepart" 
+                type="time" 
+                id="heureDepart" 
+                class="form-control" 
+                placeholder="Heure de départ" 
+                aria-label="Heure de départ" 
+            />
+        </div>
+
+        <!-- Bouton Rechercher -->
+        <div class="col-12 text-center">
+            <button type="submit" class="btn btn-primary px-4 py-2">Rechercher</button>
+        </div>
+    </form>
+    </div>
+
+{% endblock %}

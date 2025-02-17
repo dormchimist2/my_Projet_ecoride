@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Préférences du Conducteur{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h2 class="mb-4">Modifier vos préférences</h2>
+
+    {{ form_start(form) }}
+    
+    <div class="card p-4 shadow">
+        
+        <div class="form-check mb-3">
+            {{ form_widget(form.accepteFumeurs, { 'attr': {'class': 'form-check-input'} }) }}
+            {{ form_label(form.accepteFumeurs, null, { 'attr': {'class': 'form-check-label'} }) }}
+        </div>
+
+        <div class="form-check mb-3">
+            {{ form_widget(form.accepteAnimauxG, { 'attr': {'class': 'form-check-input'} }) }}
+            {{ form_label(form.accepteAnimauxG, null, { 'attr': {'class': 'form-check-label'} }) }}
+        </div>
+
+        <div class="form-check mb-3">
+            {{ form_widget(form.accepteAnimauxP, { 'attr': {'class': 'form-check-input'} }) }}
+            {{ form_label(form.accepteAnimauxP, null, { 'attr': {'class': 'form-check-label'} }) }}
+        </div>
+
+        <div class="form-check mb-3">
+            {{ form_widget(form.musiqueAutorisee, { 'attr': {'class': 'form-check-input'} }) }}
+            {{ form_label(form.musiqueAutorisee, null, { 'attr': {'class': 'form-check-label'} }) }}
+        </div>
+
+        <div class="form-check mb-3">
+            {{ form_widget(form.discussionAutorisee, { 'attr': {'class': 'form-check-input'} }) }}
+            {{ form_label(form.discussionAutorisee, null, { 'attr': {'class': 'form-check-label'} }) }}
+        </div>
+
+        <div class="form-check mb-3">
+            {{ form_widget(form.siegeBebe, { 'attr': {'class': 'form-check-input'} }) }}
+            {{ form_label(form.siegeBebe, null, { 'attr': {'class': 'form-check-label'} }) }}
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.adPreference, null, { 'attr': {'class': 'form-label'} }) }}
+            {{ form_widget(form.adPreference, { 'attr': {'class': 'form-control'} }) }}
+            {{ form_errors(form.adPreference) }}
+        </div>
+
+        <button type="submit" class="btn btn-success w-100">Enregistrer</button>
+
+    </div>
+
+    {{ form_end(form) }}
+</div>
+{% endblock %}
