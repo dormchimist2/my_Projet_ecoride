@@ -19,6 +19,13 @@ body {
 .btn {
     display: block !important;
   }
+
+  //*************formulaire de reservation
+  /* Ajoute une nouvelle classe pour masquer le formulaire de réservation */
+.reservation-hidden {
+    display: none !important;
+}
+
   
 
 // Section photo de profil

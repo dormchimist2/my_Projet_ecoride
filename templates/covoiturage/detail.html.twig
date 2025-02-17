@@ -192,15 +192,16 @@
     </div>
 
     <!-- reserver -->
-    <div class="text-center mt-4">
-    <button class="btn btn-success" 
-            data-controller="reservation"
-            data-action="click->reservation#openReservationForm"
-            data-trajet-id="{{ covoiturage.id }}"
-            data-trajet-places="{{ covoiturage.nbPlace }}">
-        Réserver
-    </button>
-</div>
-<div id="reserve-container-{{ covoiturage.id }}"></div>
+    <div class="card-footer text-end">
+                <button class="btn btn-success" 
+                        data-controller="reservation"
+                        data-action="click->reservation#openReservationForm"
+                        data-trajet-id="${trajet.id}"
+                        data-trajet-places="${trajet.nbPlace || 1}">
+                  Réserver
+                </button>
+               <div id="reserve-container-{{ covoiturage.id }}"></div>
+              </div>
+
 
 {% endblock %}

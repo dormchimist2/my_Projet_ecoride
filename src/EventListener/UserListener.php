@@ -1,4 +1,4 @@
-<?phP
+<?php
 namespace App\EventListener;
 
 use Doctrine\ORM\Event\LifecycleEventArgs;
@@ -7,15 +7,21 @@ use App\Entity\Compte;
 
 class UserListener
 {
-    public function postPersist(User $user, LifecycleEventArgs $event): void
+    public function postPersist(LifecycleEventArgs $event): void
     {
-        $entityManager = $event->getEntityManager();
+        // Récupérer l'entité User depuis l'argument $event
+        $user = $event->getEntity(); // On récupère l'entité persistée
 
-        // Vérifie si l'utilisateur est un passager avant de lui créditer 50 crédits
-        if (in_array("ROLE_PASSAGER", $user->getRoles())) {
-            $compte = new Compte($user);
-            $entityManager->persist($compte);
-            $entityManager->flush();
+        // Vérifier si l'entité est bien une instance de User
+        if ($user instanceof User) {
+            // Vérifie si l'utilisateur est un passager avant de lui créditer 50 crédits
+            if (in_array("ROLE_PASSAGER", $user->getRoles())) {
+                // Créer un nouveau compte pour cet utilisateur
+                $compte = new Compte($user);
+                $entityManager = $event->getEntityManager();
+                $entityManager->persist($compte);  // Persister le compte
+                $entityManager->flush();           // Sauvegarder dans la base de données
+            }
         }
     }
 }
