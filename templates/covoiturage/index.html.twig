@@ -78,36 +78,55 @@
 </div>
 {% for covoiturage in covoiturages %}
 <div class="container my-4 p-3 border rounded shadow-sm bg-light">
- 
-  <div class="text-center mb-4">
-    <h2 class="text-primary">{{ covoiturage.dateDepart|date('d M y') }}</h2>
-  </div>
+        <div class="text-center mb-4">
+            <h2 class="text-primary">{{ covoiturage.dateDepart|date('d F Y', 'Europe/Paris')|trans }}</h2>
+        </div>
+        
+        <div class="d-flex align-items-center justify-content-between">
+            <!-- Départ -->
+            <div class="text-start position-relative">
+                <h4 class="fw-bold text-primary text-center">{{ covoiturage.pointDepart }}</h4>
+                <div class="d-flex align-items-center">
+                    <div class="circle"></div>
+                    <p class="text-muted mb-0 ms-2"><i class="bi bi-clock"></i> {{ covoiturage.heureDepart|date('H:i') }}</p>
+                </div>
+            </div>
 
-  <!-- Section Départ / Flèche / Arrivée -->
-  <div class="d-flex justify-content-between align-items-center">
-    <!-- Point de départ -->
-    <div class="text-start">
-      <h4 class="fw-bold text-primary">{{ covoiturage.pointDepart }}</h4>
-      <p class="text-muted mb-0"><i class="bi bi-clock"></i> {{ covoiturage.heureDepart|date('H:i') }}</p>
-    </div>
+            <!-- Ligne entre les points -->
+            <div class="flex-grow-1 position-relative">
+                <div class="line"></div>
+            </div>
 
-    <!-- Image flèche -->
-    <div class="text-center tabista">
-      <ul>
-      <li class="pointda"></li>
-      <li class="loctub"></li>
-      <li class="pointda"></li>
-      </ul>
-    </div>
+            <!-- Arrivée -->
+            <div class="text-end position-relative">
+                <h4 class="fw-bold text-success text-center">{{ covoiturage.pointArrivee }}</h4>
+                <div class="d-flex align-items-center justify-content-end">
+                    <p class="text-muted mb-0 me-2"><i class="bi bi-clock"></i> {{ covoiturage.heureArrivee|date('H:i') }}</p>
+                    <div class="circle"></div>
+                </div>
+            </div>
+        </div>
 
-    <!-- Point d'arrivée -->
-    <div class="text-end">
-      <h4 class="fw-bold text-success">{{ covoiturage.pointArrivee }}</h4>
-      <p class="text-muted mb-0">{{ covoiturage.dateDepart|date('d/m/Y') }}</p>
-      <p class="text-muted mb-0"><i class="bi bi-clock"></i> {{ covoiturage.heureArrivee|date('H:i') }}</p>
+        <div class="d-flex justify-content-around align-items-center my-3">
+            <!-- Places disponibles -->
+            <div class="text-center">
+                <div class="seat-icon">
+                    <img src="{{ asset('photo_systeme/covoiturage/seat.png') }}" alt="Siège" class="seat-img">
+                    <span class="seat-text">{{ covoiturage.nbPlace }}</span>
+                </div>
+                <p class="text-dark fw-bold mt-2">Places disponibles</p>
+            </div>
+
+            <!-- Prix -->
+            <div class="text-center">
+                <div class="ticket-icon">
+                    <img src="{{ asset('photo_systeme/covoiturage/ticket.png') }}" alt="Billet" class="ticket-img">
+                </div>
+                <span class="text-dark fw-bold mt-2">{{ covoiturage.prix }} </span>
+                <p class="text-dark fw-bold mt-2">crédits</p>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
 
 
 

@@ -52,7 +52,7 @@
                     <img src="{{ asset('photo_systeme/covoiturage/ticket.png') }}" alt="Billet" class="ticket-img">
                 </div>
                 <span class="text-dark fw-bold mt-2">{{ covoiturage.prix }} </span>
-                <p class="text-dark fw-bold mt-2">credit</p>
+                <p class="text-dark fw-bold mt-2">crédits</p>
             </div>
         </div>
     </div>
@@ -117,7 +117,7 @@
                         <!-- Fumeurs acceptés -->
                         <div class="list-group-item d-flex justify-content-between align-items-center mb-3">
                             <div>
-        <img src="{{ asset('photo_systeme/icons/smoking.png') }}" alt="Fumeurs acceptés" class="me-2" style="width: 20px; height: 20px;"> Les fumeurs sont les bien venu
+        <img src="{{ asset('photo_systeme/icons/smoking.png') }}" alt="Fumeurs acceptés" class="me-2" style="width: 20px; height: 20px;"> Les fumeurs sont les bienvenus
     </div>
                             <span class="badge {{ covoiturage.user.preferenceCdt.accepteFumeurs ? 'bg-success' : 'bg-danger' }}">
                                 {{ covoiturage.user.preferenceCdt.accepteFumeurs ? 'Oui' : 'Non' }}
@@ -127,7 +127,7 @@
                         <!-- Grands animaux acceptés -->
                         <div class="list-group-item d-flex justify-content-between align-items-center mb-3">
                            <div>
-        <img src="{{ asset('photo_systeme/icons/paw-icon.png') }}" alt=" animaux " class="me-2" style="width: 20px; height: 20px;"> Accepte les grand animaux
+        <img src="{{ asset('photo_systeme/icons/paw-icon.png') }}" alt=" animaux " class="me-2" style="width: 20px; height: 20px;"> Accepte les grands animaux
     </div>
                             <span class="badge {{ covoiturage.user.preferenceCdt.accepteAnimauxG ? 'bg-success' : 'bg-danger' }}">
                                 {{ covoiturage.user.preferenceCdt.accepteAnimauxG ? 'Oui' : 'Non' }}
@@ -137,7 +137,7 @@
                         <!-- Petits animaux acceptés -->
                         <div class="list-group-item d-flex justify-content-between align-items-center mb-3">
                            <div>
-        <img src="{{ asset('photo_systeme/icons/pawp-icon.png') }}" alt=" animaux " class="me-2" style="width: 20px; height: 20px;"> Accepte les Petits animaux
+        <img src="{{ asset('photo_systeme/icons/pawp-icon.png') }}" alt=" animaux " class="me-2" style="width: 20px; height: 20px;"> Accepte les petits animaux
     </div>
                             <span class="badge {{ covoiturage.user.preferenceCdt.accepteAnimauxP ? 'bg-success' : 'bg-danger' }}">
                                 {{ covoiturage.user.preferenceCdt.accepteAnimauxP ? 'Oui' : 'Non' }}
@@ -147,7 +147,7 @@
                         <!-- Musique autorisée -->
                         <div class="list-group-item d-flex justify-content-between align-items-center mb-3">
                             <div>
-        <img src="{{ asset('photo_systeme/icons/music.png') }}" alt="clef sol" class="me-2" style="width: 20px; height: 20px;"> Accepte les DJ acceptés
+        <img src="{{ asset('photo_systeme/icons/music.png') }}" alt="clef sol" class="me-2" style="width: 20px; height: 20px;"> Accepte les DJ 
     </div>
                             <span class="badge {{ covoiturage.user.preferenceCdt.musiqueAutorisee ? 'bg-success' : 'bg-danger' }}">
                                 {{ covoiturage.user.preferenceCdt.musiqueAutorisee ? 'Oui' : 'Non' }}
@@ -157,7 +157,7 @@
                         <!-- Discussion autorisée -->
                         <div class="list-group-item d-flex justify-content-between align-items-center mb-3">
                            <div>
-        <img src="{{ asset('photo_systeme/icons/babble.png') }}" alt="bulle" class="me-2" style="width: 20px; height: 20px;"> Ouver au discution
+        <img src="{{ asset('photo_systeme/icons/babble.png') }}" alt="bulle" class="me-2" style="width: 20px; height: 20px;"> Ouvert aux discussions
     </div>
                             <span class="badge {{ covoiturage.user.preferenceCdt.discussionAutorisee ? 'bg-success' : 'bg-danger' }}">
                                 {{ covoiturage.user.preferenceCdt.discussionAutorisee ? 'Oui' : 'Non' }}
@@ -167,7 +167,7 @@
                         <!-- Siège bébé disponible -->
                         <div class="list-group-item d-flex justify-content-between align-items-center mb-3">
                            <div>
-        <img src="{{ asset('photo_systeme/icons/baby-chair.png') }}" alt="chaise bébé" class="me-2" style="width: 20px; height: 20px;"> Une chaise bébé disponible
+        <img src="{{ asset('photo_systeme/icons/baby-chair.png') }}" alt="chaise bébé" class="me-2" style="width: 20px; height: 20px;">Siège bébé disponible
     </div>
                             <span class="badge {{ covoiturage.user.preferenceCdt.siegeBebe ? 'bg-success' : 'bg-danger' }}">
                                 {{ covoiturage.user.preferenceCdt.siegeBebe ? 'Oui' : 'Non' }}
@@ -191,7 +191,7 @@
         {% endif %}
     </div>
 
-    <!-- reserver -->
+    <!-- reserver 
     <div class="card-footer text-end">
                 <button class="btn btn-success" 
                         data-controller="reservation"
@@ -200,8 +200,8 @@
                         data-trajet-places="${trajet.nbPlace || 1}">
                   Réserver
                 </button>
-               <div id="reserve-container-{{ covoiturage.id }}"></div>
+                <div id="reserve-container-${trajet.id}"></div>
               </div>
-
+<div id="reserve-container-{{ covoiturage.id }}"></div>-->
 
 {% endblock %}
