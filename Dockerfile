@@ -31,8 +31,7 @@ RUN groupadd -g ${GROUP_ID} appuser \
     && useradd -u ${USER_ID} -g appuser -s /bin/bash -m appuser
 
 # Configuration de PHP
-COPY php.ini-development /usr/local/etc/php/php.ini
-RUN sed -i 's/memory_limit = 128M/memory_limit = 512M/g' /usr/local/etc/php/php.ini
+RUN echo "memory_limit = 512M" >> /usr/local/etc/php/conf.d/docker-php-memory-limit.ini
 
 # Installation des dépendances Node.js pour Webpack Encore
 RUN npm install -g yarn
