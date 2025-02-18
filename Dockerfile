@@ -3,7 +3,7 @@ FROM node:18 as node-builder
 WORKDIR /app
 
 # Copie des fichiers nécessaires pour yarn
-COPY package.json yarn.lock ./
+COPY package.json ./
 COPY assets ./assets/
 COPY webpack.config.js ./
 
