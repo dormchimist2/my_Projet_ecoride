@@ -1,9 +1,19 @@
-# Utilisation de l'image PHP 8.2 FPM officielle
-FROM php:8.2-fpm
+# Étape de build pour Node.js
+FROM node:18 as node-builder
+WORKDIR /app
 
-# Arguments pour la configuration
-ARG USER_ID=1000
-ARG GROUP_ID=1000
+# Copie des fichiers nécessaires pour yarn
+COPY package.json yarn.lock ./
+COPY assets ./assets/
+COPY webpack.config.js ./
+
+# Installation des dépendances Node.js
+RUN yarn install --frozen-lockfile \
+    && yarn add @hotwired/stimulus \
+    && yarn encore production
+
+# Image PHP principale
+FROM php:8.2-fpm
 
 # Configuration de Composer pour permettre l'exécution en tant que root
 ENV COMPOSER_ALLOW_SUPERUSER=1
@@ -15,9 +25,6 @@ RUN apt-get update && apt-get install -y \
     libicu-dev \
     libzip-dev \
     libpq-dev \
-    zip \
-    nodejs \
-    npm \
     && docker-php-ext-install \
     intl \
     zip \
@@ -35,13 +42,10 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Configuration de PHP
 RUN echo "memory_limit = 512M" >> /usr/local/etc/php/conf.d/docker-php-memory-limit.ini
 
-# Installation des dépendances Node.js pour Webpack Encore
-RUN npm install -g yarn
-
 # Définition du répertoire de travail
 WORKDIR /var/www/symfony
 
-# Copie des fichiers de configuration Composer d'abord
+# Copie des fichiers de configuration Composer
 COPY composer.json composer.lock ./
 
 # Création et configuration des répertoires nécessaires
@@ -52,20 +56,19 @@ RUN mkdir -p var/cache var/log public/build \
 RUN composer install \
     --no-scripts \
     --no-interaction \
-    --prefer-dist
+    --prefer-dist \
+    --optimize-autoloader
 
 # Copie du reste des fichiers du projet
 COPY . .
 
-# Génération des fichiers de cache et assets
-RUN composer dump-autoload --optimize \
-    && php bin/console cache:clear --env=prod --no-warmup \
-    && php bin/console cache:warmup --env=prod \
-    && yarn install \
-    && yarn encore production
+# Copie des assets buildés depuis l'étape node-builder
+COPY --from=node-builder /app/public/build ./public/build
 
-# Configuration des permissions finales
-RUN chown -R www-data:www-data var public/build
+# Génération des fichiers de cache
+RUN php bin/console cache:clear --env=prod --no-warmup \
+    && php bin/console cache:warmup --env=prod \
+    && chown -R www-data:www-data var public/build
 
 # Exposition du port PHP-FPM
 EXPOSE 9000
