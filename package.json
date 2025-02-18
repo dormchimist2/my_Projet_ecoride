@@ -16,7 +16,8 @@
   "dependencies": {
     "bootstrap": "^5.3.3",
     "core-js": "^3.40.0",
-    "regenerator-runtime": "^0.14.1"
+    "regenerator-runtime": "^0.14.1",
+    "@hotwired/stimulus": "^3.0.0"
   },
   "devDependencies": {
     "@symfony/stimulus-bridge": "^3.2.3",
