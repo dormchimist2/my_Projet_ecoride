@@ -8,7 +8,7 @@ COPY assets ./assets/
 COPY webpack.config.js ./
 
 # Installation des dépendances Node.js
-RUN yarn install --frozen-lockfile \
+RUN yarn install \
     && yarn add @hotwired/stimulus \
     && yarn encore production
 
