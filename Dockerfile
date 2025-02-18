@@ -9,11 +9,7 @@ COPY webpack.config.js ./
 
 # Installation des dépendances Node.js
 RUN yarn install \
-    && yarn add @hotwired/stimulus \
-    && yarn add @symfony/webpack-encore \
-    && yarn add sass \
-    && yarn add sass-loader \
-    && yarn add webpack-notifier \
+    && yarn add @hotwired/stimulus @symfony/webpack-encore sass sass-loader webpack-notifier \
     && yarn encore production
 
 # Image PHP principale
