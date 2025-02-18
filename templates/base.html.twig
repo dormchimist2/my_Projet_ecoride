@@ -67,7 +67,7 @@
         <a class="nav-link menu-item" href="/profile/{{ app.user.id }}">Mon Profil</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link menu-item" href="/search/covoiturage">Trouver un trajet</a>
+        <a class="nav-link menu-item" href="{{ path('app_search_show') }}">Trouver un trajet</a>
     </li>
     
 {% endif %}
@@ -80,7 +80,7 @@
         
 
             {% if app.user %}
-             <a class="nav-link menu-item search-icon" href="/search/covoiturage">
+             <a class="nav-link menu-item search-icon" href="{{ path('app_search_show') }}">
                 🔍 Recherche
             </a>
                 <a class="nav-link menu-circle" href="/logout">Déconnexion</a>
@@ -93,7 +93,7 @@
 
 
         {% block body %}{% endblock %}
-        <footer>
+        
         <footer>
     <nav class="footer-nav1">
         <p>Suivez-nous sur les réseaux sociaux !</p>
@@ -130,6 +130,6 @@
 </footer>
 
         
-        </footer>
+    
     </body>
 </html>
