@@ -21,7 +21,9 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-enable \
     intl \
     zip \
-    pdo_mysql
+    pdo_mysql \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # Installation de Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -39,18 +41,25 @@ RUN npm install -g yarn
 # Définition du répertoire de travail
 WORKDIR /var/www/symfony
 
+# Copie des fichiers de configuration Composer d'abord
+COPY --chown=appuser:appuser composer.json composer.lock ./
+
+# Installation des dépendances PHP en tant que root pour éviter les problèmes de permissions
+RUN composer install --no-interaction --no-scripts --no-autoloader
+
+# Copie du reste des fichiers du projet
+COPY --chown=appuser:appuser . .
+
+# Finalisation de l'installation Composer
+RUN composer dump-autoload --optimize \
+    && composer run-script post-install-cmd
+
 # Changement vers l'utilisateur non-root
 USER appuser
 
-# Copie des fichiers du projet
-COPY --chown=appuser:appuser . .
-
-# Installation des dépendances PHP
-RUN composer install --no-interaction
-
-# Installation des dépendances Node.js
-RUN yarn install
-RUN yarn encore dev
+# Installation et build des assets
+RUN yarn install \
+    && yarn encore dev
 
 # Exposition du port PHP-FPM
 EXPOSE 9000
