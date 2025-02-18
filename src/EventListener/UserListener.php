@@ -18,10 +18,15 @@ class UserListener
             if (in_array("ROLE_PASSAGER", $user->getRoles())) {
                 // Créer un nouveau compte pour cet utilisateur
                 $compte = new Compte($user);
-                $entityManager = $event->getEntityManager();
-                $entityManager->persist($compte);  // Persister le compte
-                $entityManager->flush();           // Sauvegarder dans la base de données
+
+                // Utiliser la méthode correcte pour récupérer l'EntityManager
+                $entityManager = $event->getObjectManager();  // Remplace getEntityManager() par getObjectManager()
+
+                // Persister le compte et sauvegarder dans la base de données
+                $entityManager->persist($compte);
+                $entityManager->flush(); 
             }
         }
     }
 }
+

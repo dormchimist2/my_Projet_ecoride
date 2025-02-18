@@ -11,12 +11,12 @@ use Symfony\Component\HttpFoundation\Response;
 
 class SearchCovoiturageController extends AbstractController
 {
-    #[Route('/', name: 'app_home')]
-public function home(): Response
+    #[Route('/search/show', name: 'app_search_show')]
+public function show(): Response
 {
-  return $this->render('home/show.html.twig', [
-            'controller_name' => 'HomeController',
-        ]); // Affiche bien la home avec hero-container
+  return $this->render('search_covoiturage/search/show.html.twig', [
+            'controller_name' => 'SearchCovoiturageController',
+        ]); 
 }
 
 

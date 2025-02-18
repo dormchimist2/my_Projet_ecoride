@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Rechercher un covoiturage{% endblock %}
+
+{% block body %}
+{% block search_form %}
+        {# Inclusion le formulaire de recherche #}
+        {% include 'search_covoiturage/index.html.twig' %}
+    {% endblock %}
+{% endblock %}
