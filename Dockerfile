@@ -5,32 +5,32 @@ FROM php:8.2-fpm
 ARG USER_ID=1000
 ARG GROUP_ID=1000
 
+# Configuration de Composer pour permettre l'exécution en tant que root
+ENV COMPOSER_ALLOW_SUPERUSER=1
+
 # Installation des dépendances système
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
     libicu-dev \
     libzip-dev \
+    libpq-dev \
     zip \
     nodejs \
     npm \
     && docker-php-ext-install \
     intl \
     zip \
-    pdo_mysql \
+    pdo_pgsql \
     && docker-php-ext-enable \
     intl \
     zip \
-    pdo_mysql \
+    pdo_pgsql \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 # Installation de Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
-# Création d'un utilisateur non-root
-RUN groupadd -g ${GROUP_ID} appuser \
-    && useradd -u ${USER_ID} -g appuser -s /bin/bash -m appuser
 
 # Configuration de PHP
 RUN echo "memory_limit = 512M" >> /usr/local/etc/php/conf.d/docker-php-memory-limit.ini
@@ -42,27 +42,37 @@ RUN npm install -g yarn
 WORKDIR /var/www/symfony
 
 # Copie des fichiers de configuration Composer d'abord
-COPY --chown=appuser:appuser composer.json composer.lock ./
+COPY composer.json composer.lock ./
 
-# Installation des dépendances PHP en tant que root pour éviter les problèmes de permissions
-RUN composer install --no-interaction --no-scripts --no-autoloader
+# Création et configuration des répertoires nécessaires
+RUN mkdir -p var/cache var/log public/build \
+    && chmod -R 777 var public/build
+
+# Installation des dépendances PHP sans scripts
+RUN composer install \
+    --no-scripts \
+    --no-interaction \
+    --prefer-dist
 
 # Copie du reste des fichiers du projet
-COPY --chown=appuser:appuser . .
+COPY . .
 
-# Finalisation de l'installation Composer
+# Génération des fichiers de cache et assets
 RUN composer dump-autoload --optimize \
-    && composer run-script post-install-cmd
+    && php bin/console cache:clear --env=prod --no-warmup \
+    && php bin/console cache:warmup --env=prod \
+    && yarn install \
+    && yarn encore production
 
-# Changement vers l'utilisateur non-root
-USER appuser
-
-# Installation et build des assets
-RUN yarn install \
-    && yarn encore dev
+# Configuration des permissions finales
+RUN chown -R www-data:www-data var public/build
 
 # Exposition du port PHP-FPM
 EXPOSE 9000
+
+# Définition des variables d'environnement pour la production
+ENV APP_ENV=prod
+ENV APP_DEBUG=0
 
 # Commande par défaut
 CMD ["php-fpm"]
