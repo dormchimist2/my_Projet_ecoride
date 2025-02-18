@@ -7,16 +7,19 @@ COPY package.json ./
 COPY assets ./assets/
 COPY webpack.config.js ./
 
-# Installation des dépendances Node.js
-RUN yarn install \
-    && yarn add @hotwired/stimulus @symfony/webpack-encore sass sass-loader webpack-notifier \
-    && yarn encore production
+# Installation des dépendances Node.js exactes de package.json
+RUN npm install -g yarn && \
+    yarn install && \
+    yarn add @hotwired/stimulus && \
+    yarn build
 
 # Image PHP principale
 FROM php:8.2-fpm
 
 # Configuration de Composer pour permettre l'exécution en tant que root
 ENV COMPOSER_ALLOW_SUPERUSER=1
+ENV APP_ENV=prod
+ENV APP_DEBUG=0
 
 # Installation des dépendances système
 RUN apt-get update && apt-get install -y \
@@ -57,7 +60,8 @@ RUN composer install \
     --no-scripts \
     --no-interaction \
     --prefer-dist \
-    --optimize-autoloader
+    --optimize-autoloader \
+    --no-dev
 
 # Copie du reste des fichiers du projet
 COPY . .
@@ -66,16 +70,13 @@ COPY . .
 COPY --from=node-builder /app/public/build ./public/build
 
 # Génération des fichiers de cache
-RUN php bin/console cache:clear --env=prod --no-warmup \
-    && php bin/console cache:warmup --env=prod \
-    && chown -R www-data:www-data var public/build
+RUN set -eux; \
+    php bin/console cache:clear --env=prod --no-warmup; \
+    php bin/console cache:warmup --env=prod; \
+    chown -R www-data:www-data var public/build
 
 # Exposition du port PHP-FPM
 EXPOSE 9000
-
-# Définition des variables d'environnement pour la production
-ENV APP_ENV=prod
-ENV APP_DEBUG=0
 
 # Commande par défaut
 CMD ["php-fpm"]
