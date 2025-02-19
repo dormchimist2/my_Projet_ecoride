@@ -10,9 +10,10 @@ use Doctrine\ORM\Mapping as ORM;
 class Compte
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+#[ORM\GeneratedValue]
+#[ORM\Column(type: 'integer', options: ['autoincrement' => true])]
+private ?int $id = null;
+
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
     private string $solde = "50.00"; // 50 crédits offerts par défaut

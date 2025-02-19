@@ -13,9 +13,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Covoiturage
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+#[ORM\GeneratedValue(strategy: 'IDENTITY')]
+#[ORM\Column(type: 'integer')]
+private ?int $id = null;
+
 
     // Date de départ avec contrainte GreaterThanOrEqual
     #[ORM\Column(type: Types::DATE_MUTABLE)]

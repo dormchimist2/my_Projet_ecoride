@@ -11,9 +11,10 @@ use Doctrine\ORM\Mapping as ORM;
 class PreferenceCdt
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+#[ORM\GeneratedValue(strategy: "IDENTITY")]
+#[ORM\Column(type: 'integer')]
+private ?int $id = null;
+
 
     #[ORM\Column]
     private ?bool $accepteFumeurs = null;

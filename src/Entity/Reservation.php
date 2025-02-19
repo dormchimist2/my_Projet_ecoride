@@ -10,9 +10,11 @@ use Doctrine\ORM\Mapping as ORM;
 class Reservation
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+#[ORM\GeneratedValue(strategy: "AUTO")]
+#[ORM\Column(type: 'integer')]
+private ?int $id = null;
+
+
 
     #[ORM\ManyToOne(inversedBy: 'reservations')]
     #[ORM\JoinColumn(nullable: false)]

@@ -12,9 +12,9 @@ use Doctrine\ORM\Mapping as ORM;
 class Voiture
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+#[ORM\GeneratedValue(strategy: "AUTO")]
+#[ORM\Column(type: 'integer')]
+private ?int $id = null;
 
     #[ORM\Column(length: 50, nullable: true)]
     private ?string $marque = null;
