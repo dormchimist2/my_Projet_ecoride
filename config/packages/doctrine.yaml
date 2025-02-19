@@ -1,9 +1,6 @@
 doctrine:
     dbal:
-        driver: 'pdo_mysql'
-        url: 'postgresql://ecowhat_user:KsYwBbfZNOV57vwRCgmUOYI26aUN2PfH@dpg-cuqs8n56l47c73chtkn0-a.frankfurt-postgres.render.com/ecowhat'
-        charset: 'UTF8'
-        server_version: '16'
+        url: '%env(resolve:DATABASE_URL)%'
 
         # IMPORTANT: You MUST configure your server version,
         # either here or in the DATABASE_URL env var (see .env file)
