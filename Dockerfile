@@ -33,7 +33,7 @@ WORKDIR /var/www/symfony
 COPY . .
 
 # Installation des dépendances et build en mode production
-RUN composer install --no-dev --optimize-autoloader \
+RUN APP_ENV=prod composer install --no-dev --optimize-autoloader \
     && composer dump-autoload --optimize \
     && yarn install \
     && yarn encore production \
