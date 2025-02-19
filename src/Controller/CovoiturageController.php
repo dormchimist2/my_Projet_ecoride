@@ -25,26 +25,35 @@ class CovoiturageController extends AbstractController
     }
 
     #[Route('/covoiturage', name: 'covoiturage_index', methods: ['GET', 'POST'])]
-    public function index(Request $request, CovoiturageRepository $covoiturageRepository): Response
-    {
-        $covoiturages = $covoiturageRepository->findAll();
-        $covoiturage = new Covoiturage();
-        $form = $this->createForm(CovoiturageType::class, $covoiturage);
-        $form->handleRequest($request);
+public function index(Request $request, CovoiturageRepository $covoiturageRepository): Response
+{
+    $covoiturages = $covoiturageRepository->findAll();
+    $covoiturage = new Covoiturage();
+    $form = $this->createForm(CovoiturageType::class, $covoiturage);
+    $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->entityManager->persist($covoiturage);
-            $this->entityManager->flush();
-            $this->addFlash('success', 'Covoiturage créé avec succès !');
-
-            return $this->redirectToRoute('covoiturage_index');
+    if ($form->isSubmitted() && $form->isValid()) {
+        //  Associer l'utilisateur connecté
+        $user = $this->getUser();
+        if (!$user) {
+            throw new \Exception("Utilisateur non connecté.");
         }
+        $covoiturage->setUser($user); // Associe le covoiturage à l'utilisateur
 
-        return $this->render('covoiturage/index.html.twig', [
-            'covoiturages' => $covoiturages,
-            'form' => $form->createView(),
-        ]);
+        $this->entityManager->persist($covoiturage);
+        $this->entityManager->flush();
+        $this->addFlash('success', 'Covoiturage créé avec succès !');
+
+        return $this->redirectToRoute('covoiturage_index');
     }
+
+    return $this->render('covoiturage/index.html.twig', [
+        'covoiturages' => $covoiturages,
+        'form' => $form->createView(),
+    ]);
+}
+
+
 
     #[Route('/covoiturage/{id}', name: 'covoiturage_detail', methods: ['GET'])]
     public function detail(int $id, CovoiturageRepository $covoiturageRepository): Response
