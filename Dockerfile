@@ -32,6 +32,9 @@ WORKDIR /var/www/symfony
 # Copie des fichiers du projet
 COPY . .
 
+# Renommage de .env en .env.dev
+RUN mv .env .env.dev
+
 # Installation des dépendances et build en mode production
 RUN composer install --optimize-autoloader \
     && composer dump-autoload --optimize \
