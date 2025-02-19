@@ -32,8 +32,8 @@ WORKDIR /var/www/symfony
 # Copie des fichiers du projet
 COPY . .
 
-# Création du fichier .env à partir des variables Render
-RUN printenv | grep -E '^(DATABASE_URL)' > .env.dev
+# Render executable le script d'entrée
+RUN chmod +x ./entrypoint.sh
 
 # Installation des dépendances et build en mode production
 RUN composer install --optimize-autoloader \
@@ -42,14 +42,11 @@ RUN composer install --optimize-autoloader \
     && yarn encore production \
     && php bin/console cache:clear --env=dev --no-debug
 
-# Exécution des migrations Symfony
-RUN php bin/console doctrine:migrations:migrate --no-interaction
-
 # Configuration Nginx
 COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
 
 # Exposition du port 80
 EXPOSE 80
 
-# Démarrage de PHP-FPM et Nginx
-CMD php-fpm82 && nginx -g 'daemon off;'
+# Démarrage du point d'entrée
+ENTRYPOINT ["/entrypoint.sh"]
