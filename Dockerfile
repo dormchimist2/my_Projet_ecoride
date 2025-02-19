@@ -42,6 +42,9 @@ RUN composer install --optimize-autoloader \
     && yarn encore production \
     && php bin/console cache:clear --env=dev --no-debug
 
+# Exécution des migrations Symfony
+RUN php bin/console doctrine:migrations:migrate --no-interaction
+
 # Configuration Nginx
 COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
 
