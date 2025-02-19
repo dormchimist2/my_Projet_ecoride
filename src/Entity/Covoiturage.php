@@ -13,7 +13,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Covoiturage
 {
     #[ORM\Id]
-#[ORM\GeneratedValue(strategy: 'IDENTITY')]
+#[ORM\GeneratedValue(strategy: 'AUTO')]
 #[ORM\Column(type: 'integer')]
 private ?int $id = null;
 
