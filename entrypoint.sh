@@ -5,6 +5,7 @@
 
 # cat "DATABASE_URL=${DATABASE_URL}" > /var/www/symfony/.env.local
 cat /var/www/symfony/.env.dev
+
 echo "DATABASE_URL=${DATABASE_URL}" > /var/www/symfony/.env.local
 
 # Lancer les migrations (optionnel, si nécessaire)
