@@ -32,9 +32,6 @@ WORKDIR /var/www/symfony
 # Copie des fichiers du projet
 COPY . .
 
-# Render executable le script d'entrée
-RUN chmod +x ./entrypoint.sh
-
 # Installation des dépendances et build en mode production
 RUN composer install --optimize-autoloader \
     && composer dump-autoload --optimize \
@@ -45,8 +42,14 @@ RUN composer install --optimize-autoloader \
 # Configuration Nginx
 COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
 
+# Copier explicitement entrypoint.sh à la racine
+COPY entrypoint.sh /entrypoint.sh
+
 # Exposition du port 80
 EXPOSE 80
 
+# Donner les bonnes permissions au script
+RUN chmod +x /entrypoint.sh
+
 # Démarrage du point d'entrée
-ENTRYPOINT ["./entrypoint.sh"]
+ENTRYPOINT ["/entrypoint.sh"]
