@@ -37,7 +37,7 @@ RUN composer install --optimize-autoloader \
     && composer dump-autoload --optimize \
     && yarn install \
     && yarn encore production \
-    && php bin/console cache:clear --env=dev --no-debug
+    && php bin/console cache:clear --env=dev debug:dotenv DATABASE_URL
 
 # Configuration Nginx
 COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
