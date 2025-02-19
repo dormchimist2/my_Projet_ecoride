@@ -33,11 +33,11 @@ WORKDIR /var/www/symfony
 COPY . .
 
 # Installation des dépendances et build en mode production
-RUN APP_ENV=prod composer install --no-dev --optimize-autoloader \
+RUN composer install --optimize-autoloader \
     && composer dump-autoload --optimize \
     && yarn install \
     && yarn encore production \
-    && php bin/console cache:clear --env=prod --no-debug
+    && php bin/console cache:clear --env=dev --no-debug
 
 # Configuration Nginx
 COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
