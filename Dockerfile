@@ -14,6 +14,9 @@ RUN apk add --no-cache \
     php82-phar \
     php82-mbstring \
     php82-openssl \
+    php82-xml \
+    php82-simplexml \
+    php82-dom \
     nodejs \
     npm \
     yarn
