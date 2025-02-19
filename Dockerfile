@@ -32,12 +32,14 @@ WORKDIR /var/www/symfony
 # Copie des fichiers du projet
 COPY . .
 
+ENV DATABASE_URL="postgresql://ecowhat_user:KsYwBbfZNOV57vwRCgmUOYI26aUN2PfH@dpg-cuqs8n56l47c73chtkn0-a.frankfurt-postgres.render.com/ecowhat?sslmode=require"
+
 # Installation des dépendances et build en mode production
 RUN composer install --optimize-autoloader \
     && composer dump-autoload --optimize \
     && yarn install \
     && yarn encore production \
-    && php bin/console cache:clear debug:dotenv DATABASE_URL --env=dev 
+    && php bin/console cache:clear --env=dev --no-debug
 
 # Configuration Nginx
 COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
@@ -45,5 +47,6 @@ COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
 # Exposition du port 80
 EXPOSE 80
 
-# Démarrage de PHP-FPM et Nginx
-CMD php-fpm82 && nginx -g 'daemon off;'
+# Avant de démarrer les services
+CMD export DATABASE_URL="postgresql://ecowhat_user:KsYwBbfZNOV57vwRCgmUOYI26aUN2PfH@dpg-cuqs8n56l47c73chtkn0-a.frankfurt-postgres.render.com/ecowhat" && \
+    php-fpm82 && nginx -g 'daemon off;'
