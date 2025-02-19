@@ -32,7 +32,7 @@ WORKDIR /var/www/symfony
 # Copie des fichiers du projet
 COPY . .
 
-RUN echo "${DATABASE_URL}"
+RUN echo "DATABASE_URL=${DATABASE_URL}"
 
 # Installation des dépendances et build en mode production
 RUN composer install --optimize-autoloader \
