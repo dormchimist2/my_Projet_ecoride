@@ -1,7 +1,7 @@
 doctrine:
     dbal:
         driver: 'pdo_mysql'
-        url: '%env(DATABASE_URL)%'
+        url: 'toto'
         charset: 'UTF8'
         server_version: '16'
 
@@ -37,21 +37,7 @@ when@test:
             # "TEST_TOKEN" is typically set by ParaTest
             dbname_suffix: '_test%env(default::TEST_TOKEN)%'
 
-when@dev:
-    doctrine:
-        dbal:
-            driver: 'pdo_mysql'
-            url: '%env(DATABASE_URL)%'
-            charset: 'UTF8'
-            server_version: '16'
-
 when@prod:
-    doctrine:
-        dbal:
-            driver: 'pdo_mysql'
-            url: '%env(DATABASE_URL)%'
-            charset: 'UTF8'
-            server_version: '16'
         orm:
             auto_generate_proxy_classes: false
             proxy_dir: '%kernel.build_dir%/doctrine/orm/Proxies'
