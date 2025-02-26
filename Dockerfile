@@ -1,49 +1,38 @@
-FROM nginx:alpine
+FROM php:8.2-fpm-alpine
 
-# Installation de PHP et des extensions nécessaires
-RUN apk add --no-cache \
-    php82 php82-fpm php82-pdo_pgsql php82-iconv php82-intl php82-zip \
-    php82-ctype php82-tokenizer php82-session php82-phar php82-mbstring \
-    php82-openssl php82-xml php82-simplexml php82-dom nodejs yarn \
-    && ln -s /usr/bin/php82 /usr/bin/php \
-    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
-    && composer --version \
-    && yarn --version \
-    && rm -rf /var/cache/apk/* /tmp/*
+# Installer les paquets nécessaires
+RUN apk add --no-cache nginx nodejs yarn \
+    && docker-php-ext-install pdo pdo_pgsql intl opcache
 
+# Installer Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Définir le répertoire de travail
 WORKDIR /var/www/symfony
 
-# Copie des fichiers du projet
+# Copier les fichiers du projet
 COPY . .
 
-# Créer un utilisateur et un groupe www-data sans utiliser addgroup/adduser
-RUN echo "www-data:x:82:82:www-data:/var/www:/bin/sh" >> /etc/passwd \
-    && echo "www-data:x:82:" >> /etc/group
+# Ajuster les permissions pour éviter les erreurs de Render
+RUN mkdir -p /var/www/symfony/var /var/www/symfony/node_modules \
+    && chown -R www-data:www-data /var/www/symfony
 
-# Donner les bonnes permissions
-RUN chown -R www-data:www-data /var/www/symfony \
-    && chown -R www-data:www-data /var/www/symfony/var \
-    && chown -R www-data:www-data /var/www/symfony/node_modules \
-    && chmod -R 755 /var/www/symfony
+# Passer à l’utilisateur www-data
+USER www-data
 
-# Installation des dépendances et build en mode production
-RUN composer install --optimize-autoloader \
-    && composer dump-autoload --optimize \
-    && yarn install \
+# Installer les dépendances et construire les assets
+RUN composer install --no-interaction --no-dev --optimize-autoloader \
+    && yarn install --frozen-lockfile \
     && yarn encore production \
     && php bin/console cache:clear --env=prod --no-debug
 
-# Configuration Nginx
+# Copier la configuration Nginx et le script de démarrage
 COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
+COPY start.sh /start.sh
+RUN chmod +x /start.sh
 
-# Copier explicitement entrypoint.sh à la racine
-COPY entrypoint.sh /entrypoint.sh
-
-# Exposition du port 80
+# Exposer le port 80
 EXPOSE 80
 
-# Donner les bonnes permissions au script
-RUN chmod +x /entrypoint.sh
-
-# Démarrage du point d'entrée
-ENTRYPOINT ["/entrypoint.sh"]
+# Lancer Nginx et PHP-FPM
+ENTRYPOINT ["/start.sh"]
