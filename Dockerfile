@@ -16,14 +16,15 @@ WORKDIR /var/www/symfony
 # Copie des fichiers du projet
 COPY . .
 
-# Créer l'utilisateur et le groupe www-data
-RUN addgroup -S www-data && adduser -S -G www-data www-data
+# Créer un groupe et un utilisateur www-data
+RUN addgroup -g 82 -S www-data && adduser -u 82 -S -G www-data www-data
 
 # Donner les bonnes permissions
 RUN chown -R www-data:www-data /var/www/symfony \
     && chown -R www-data:www-data /var/www/symfony/var \
     && chown -R www-data:www-data /var/www/symfony/node_modules \
     && chmod -R 755 /var/www/symfony
+
 
 # Installation des dépendances et build en mode production
 RUN composer install --optimize-autoloader \
