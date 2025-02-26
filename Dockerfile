@@ -4,11 +4,12 @@ FROM nginx:alpine
 RUN apk add --no-cache \
     php82 php82-fpm php82-pdo_pgsql php82-iconv php82-intl php82-zip \
     php82-ctype php82-tokenizer php82-session php82-phar php82-mbstring \
-    php82-openssl php82-xml php82-simplexml php82-dom nodejs=16.x yarn=1.22.x \
+    php82-openssl php82-xml php82-simplexml php82-dom nodejs yarn \
     && ln -s /usr/bin/php82 /usr/bin/php \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && composer --version \
-    && yarn --version
+    && yarn --version \
+    && rm -rf /var/cache/apk/* /tmp/*
 
 WORKDIR /var/www/symfony
 
@@ -18,7 +19,8 @@ COPY . .
 # Donner les bonnes permissions aux fichiers et répertoires
 RUN chown -R www-data:www-data /var/www/symfony \
     && chown -R www-data:www-data /var/www/symfony/var \
-    && chown -R www-data:www-data /var/www/symfony/node_modules
+    && chown -R www-data:www-data /var/www/symfony/node_modules \
+    && chmod -R 755 /var/www/symfony
 
 # Installation des dépendances et build en mode production
 RUN composer install --optimize-autoloader \
