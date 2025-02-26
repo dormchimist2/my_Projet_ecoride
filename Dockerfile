@@ -1,10 +1,14 @@
 FROM php:8.2-fpm-alpine
 
-# Installer les paquets nécessaires
-RUN apk add --no-cache nginx nodejs yarn \
+# Installer les paquets nécessaires, y compris PostgreSQL et ses dépendances
+RUN apk add --no-cache \
+    nginx \
+    nodejs \
+    yarn \
+    postgresql-dev \
     && docker-php-ext-install pdo pdo_pgsql intl opcache
 
-# Installer Composer
+# Installer Composer depuis l'image officielle Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Définir le répertoire de travail
