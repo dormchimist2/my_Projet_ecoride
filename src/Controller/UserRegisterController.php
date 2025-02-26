@@ -1,8 +1,7 @@
 <?php
-
 namespace App\Controller;
 
-use App\Entity\User;
+use App\Entity\Userx;
 use App\Form\UserType;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -20,8 +19,8 @@ class UserRegisterController extends AbstractController
         UserPasswordHasherInterface $passwordHasher,
         EntityManagerInterface $entityManager
     ): Response {
-        // Créez une nouvelle instance de l'entité User
-        $user = new User();
+        // Créez une nouvelle instance de l'entité Userx
+        $user = new Userx();
 
         // Créez le formulaire en utilisant UserType
         $form = $this->createForm(UserType::class, $user);
@@ -33,6 +32,7 @@ class UserRegisterController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             // Récupérez les données soumises depuis le formulaire
             $user = $form->getData();
+           
 
             // Hash du mot de passe
             $hashedPassword = $passwordHasher->hashPassword($user, $user->getPassword());
@@ -46,11 +46,13 @@ class UserRegisterController extends AbstractController
                 // Message flash de succès
                 $this->addFlash('success', sprintf('Bienvenue %s, votre compte a été créé avec succès !', $user->getFirstName()));
 
-                // Redirigez vers une page d'accueil ou une autre route
-                return $this->redirectToRoute('app_home');
+                // Redirigez vers le nouveau profile
+                return $this->redirectToRoute('app_profile_show', ['id' => $user->getId()]);
+ 
             } catch (\Exception $e) {
                 // Gestion des erreurs en cas de problème avec la base de données
                 $this->addFlash('danger', 'Une erreur est survenue lors de la création de votre compte.');
+                dd($e->getMessage()); // Debug de l'erreur
             }
         }
 
@@ -59,24 +61,20 @@ class UserRegisterController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+
     #[Route('/users', name: 'app_users_list', methods: ['GET'])]
-public function list(UserRepository $userRepository): Response
-{
-    // Récupérer tous les utilisateurs
-    $users = $userRepository->findAll();
+    public function list(UserRepository $userRepository): Response
+    {
+        // Récupérer tous les utilisateurs
+        $users = $userRepository->findAll();
 
-    // Vérifiez si la liste est vide
-    if (empty($users)) {
-        $this->addFlash('info', 'Aucun utilisateur trouvé.');
+        // Vérifiez si la liste est vide
+        if (empty($users)) {
+            $this->addFlash('info', 'Aucun utilisateur trouvé.');
+        }
+
+        return $this->render('user/list.html.twig', [
+            'users' => $users, // Passez les utilisateurs à la vue
+        ]);
     }
-
-    return $this->render('user/list.html.twig', [
-        'users' => $users, // Passez les utilisateurs à la vue
-    ]);
 }
-
-
-
-
-}
-

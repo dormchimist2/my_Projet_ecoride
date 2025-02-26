@@ -2,7 +2,7 @@
 namespace App\Controller;
 
 use App\Repository\UserRepository;
-use App\Entity\User;
+use App\Entity\Userx;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -16,7 +16,7 @@ class ProfileController extends AbstractController
     public function show( $id, UserInterface $currentUser, EntityManagerInterface $entityManager): Response
     {
         // Récupérer l'utilisateur à partir de la base de données
-        $user = $entityManager->getRepository(User::class)->find($id);
+        $user = $entityManager->getRepository(Userx::class)->find($id);
        
         // Vérifier si l'utilisateur existe
         if (!$user) {

@@ -16,3 +16,17 @@
 npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###
+# Node.js / Yarn
+/node_modules/
+/yarn-error.log
+/yarn.lock
+
+# Build / compiled files
+/public/build/
+/var/
+/vendor/
+
+# IDE / Editor files
+.vscode/
+.idea/
+

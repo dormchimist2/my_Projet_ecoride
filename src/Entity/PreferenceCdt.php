@@ -39,7 +39,8 @@ private ?bool $accepteAnimauxG = null;
     private ?string $adPreference = null;
 
     #[ORM\OneToOne(inversedBy: 'preferenceCdt', cascade: ['persist', 'remove'])]
-    private ?User $user = null;
+    #[ORM\JoinColumn(nullable: false)]  // L'utilisateur est obligatoire
+    private ?Userx $user = null;
 
     /**
      * @var Collection<int, Covoiturage>
@@ -142,12 +143,12 @@ private ?bool $accepteAnimauxG = null;
         return $this;
     }
 
-    public function getUser(): ?User
+    public function getUser(): ?Userx
     {
         return $this->user;
     }
 
-    public function setUser(?User $user): static
+    public function setUser(?Userx $user): static
     {
         $this->user = $user;
 

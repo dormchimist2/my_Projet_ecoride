@@ -18,7 +18,7 @@ private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'reservations')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $user = null;
+    private ?Userx $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'reservations')]
     #[ORM\JoinColumn(nullable: false)]
@@ -46,12 +46,12 @@ private ?int $id = null;
         return $this->id;
     }
 
-    public function getUser(): ?User
+    public function getUser(): ?Userx
     {
         return $this->user;
     }
 
-    public function setUser(?User $user): static
+    public function setUser(?Userx $user): static
     {
         $this->user = $user;
         return $this;

@@ -1,7 +1,7 @@
 <?php
 namespace App\Controller;
 
-use App\Entity\User;
+use App\Entity\Userx;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,7 +19,7 @@ class AdminCreatorController extends AbstractController
     ): Response {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        $user = new User();
+        $user = new Userx();
         $user->setEmail($request->get('email'));
         $user->setRoles(['ROLE_EMPLOYE']);
         $hashedPassword = $passwordHasher->hashPassword($user, $request->get('password'));

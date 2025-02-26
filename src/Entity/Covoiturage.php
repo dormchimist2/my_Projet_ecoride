@@ -54,7 +54,7 @@ private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'covoiturages')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $User = null;
+    private ?Userx $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'covoiturages')]
     private ?Voiture $voiture = null;
@@ -174,14 +174,14 @@ private ?int $id = null;
         return $this;
     }
 
-    public function getUser(): ?User
+    public function getUser(): ?Userx
     {
-        return $this->User;
+        return $this->user;
     }
 
-    public function setUser(?User $User): static
+    public function setUser(?Userx $user): static
     {
-        $this->User = $User;
+        $this->user = $user;
 
         return $this;
     }

@@ -35,7 +35,7 @@ private ?int $id = null;
     private ?string $moteur = null;
 
     #[ORM\ManyToOne(inversedBy: 'voitures')]
-    private ?User $user = null;
+    private ?Userx $user = null;
 
     /**
      * @var Collection<int, Covoiturage>
@@ -125,12 +125,12 @@ private ?int $id = null;
         return $this;
     }
 
-    public function getUser(): ?User
+    public function getUser(): ?Userx
     {
         return $this->user;
     }
 
-    public function setUser(?User $user): static
+    public function setUser(?Userx $user): static
     {
         $this->user = $user;
 
