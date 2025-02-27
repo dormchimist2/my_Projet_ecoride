@@ -24,11 +24,18 @@ RUN mkdir -p /var/www/symfony/var /var/www/symfony/node_modules \
 # Passer à l’utilisateur www-data
 USER www-data
 
-# Installer les dépendances et construire les assets
-RUN composer install --no-interaction --no-dev --optimize-autoloader \
-    && yarn install --frozen-lockfile \
-    && yarn encore production \
-    && php bin/console cache:clear --env=prod --no-debug
+# Installer Composer et les dépendances
+RUN composer install --no-interaction --no-dev --optimize-autoloader
+
+# Vérifier si bin/console existe
+RUN ls -l /var/www/symfony/bin/
+
+# Installer Yarn et gérer les assets
+RUN yarn install --frozen-lockfile
+RUN yarn encore production
+
+# Effacer le cache Symfony
+RUN php /var/www/symfony/bin/console cache:clear --env=prod --no-debug
 
 # Copier la configuration Nginx et le script de démarrage
 COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
