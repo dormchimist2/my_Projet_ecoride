@@ -29,3 +29,5 @@ README.md
 !composer.lock
 !bin/
 !bin/console
+!.env
+
