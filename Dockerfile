@@ -23,6 +23,9 @@ RUN mkdir -p var/cache var/logs && chmod -R 777 var/cache var/logs
 # Passer à l’utilisateur www-data
 USER www-data
 
+# Installer Composer depuis l'image officielle Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
 # Installer Composer et les dépendances
 RUN composer install --no-interaction --no-dev --optimize-autoloader
 
