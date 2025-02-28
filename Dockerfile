@@ -1,38 +1,39 @@
 FROM php:8.2-fpm-alpine
 
-# Installer les paquets nécessaires
+# Installer les paquets nécessaires, y compris PostgreSQL, Git, et ses dépendances
 RUN apk add --no-cache \
     nginx \
     nodejs \
     yarn \
     postgresql-dev \
+    git \
     && docker-php-ext-install pdo pdo_pgsql intl opcache
+
+# Créer un utilisateur non-root pour des raisons de sécurité
+RUN addgroup -g 1000 symfony && adduser -G symfony -u 1000 -D symfony
 
 # Définir le répertoire de travail
 WORKDIR /var/www/symfony
-# Créer le dossier Symfony et lui donner les bonnes permissions
-RUN mkdir -p /var/www/symfony && chmod -R 777 /var/www/symfony
 
-# Installer Composer depuis l’image officielle
+# Copier composer depuis l’image officielle
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-#  Ajouter un utilisateur non-root pour exécuter Composer
-RUN addgroup -g 1000 symfony && adduser -G symfony -u 1000 -D symfony
-USER symfony
-
-# Copier seulement les fichiers nécessaires avant d’installer les dépendances
+# Copier uniquement les fichiers nécessaires avant d'installer les dépendances
 COPY composer.json composer.lock symfony.lock ./
 
-# Installer les dépendances PHP
+# Passer à l'utilisateur non-root pour installer les dépendances avec Composer
+USER symfony
+
+# Installer les dépendances avec Composer
 RUN composer install --no-interaction --no-dev --optimize-autoloader
 
-# Revenir à l’utilisateur www-data pour exécuter l’application
+# Revenir à www-data pour exécuter l’application
 USER www-data
 
 # Copier le reste du projet
 COPY . .
 
-# Gérer les permissions pour le cache et les logs
+# Gérer les permissions pour les dossiers var/cache et var/logs
 RUN mkdir -p var/cache var/logs && chmod -R 777 var/cache var/logs
 
 # Installer Yarn et gérer les assets
