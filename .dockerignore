@@ -27,3 +27,5 @@ README.md
 # Autoriser des fichiers essentiels
 !composer.json
 !composer.lock
+!bin/
+!bin/console
