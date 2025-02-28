@@ -1,30 +1,31 @@
 FROM php:8.2-fpm-alpine
 
-# Installer les paquets nécessaires
+# Installer les paquets nécessaires, y compris PostgreSQL et ses dépendances
 RUN apk add --no-cache \
     nginx \
     nodejs \
     yarn \
     postgresql-dev \
     && docker-php-ext-install pdo pdo_pgsql intl opcache
-
-# ✅ Installer Composer
+# Copier seulement les fichiers nécessaires AVANT d'installer les dépendances
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Définir le répertoire de travail
-WORKDIR /var/www/symfony
-
-# Copier seulement les fichiers nécessaires AVANT d'installer les dépendances
-COPY composer.json composer.lock symfony.lock ./
-
-# ✅ Vérifier que Composer est bien installé
-RUN composer --version
-
-# Installer les dépendances PHP
 RUN composer install --no-interaction --no-dev --optimize-autoloader
 
 # Maintenant on copie le reste du projet
 COPY . .
+
+# Vérifier si bin/console existe
+RUN ls -l /var/www/symfony/bin/
+
+# Assurer que le cache est bien géré
+RUN mkdir -p var/cache var/logs && chmod -R 777 var/cache var/logs
+
+# Passer à l’utilisateur www-data
+USER www-data
+
+# Installer Composer et les dépendances
+RUN composer install --no-interaction --no-dev --optimize-autoloader
 
 # Vérifier si bin/console existe
 RUN ls -l /var/www/symfony/bin/
