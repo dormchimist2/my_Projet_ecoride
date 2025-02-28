@@ -10,6 +10,8 @@ RUN apk add --no-cache \
 
 # Définir le répertoire de travail
 WORKDIR /var/www/symfony
+# Créer le dossier Symfony et lui donner les bonnes permissions
+RUN mkdir -p /var/www/symfony && chmod -R 777 /var/www/symfony
 
 # Installer Composer depuis l’image officielle
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
