@@ -7,19 +7,18 @@ RUN apk add --no-cache \
     yarn \
     postgresql-dev \
     && docker-php-ext-install pdo pdo_pgsql intl opcache
+# Copier seulement les fichiers nécessaires AVANT d'installer les dépendances
+COPY composer.json composer.lock symfony.lock ./
+RUN composer install --no-interaction --no-dev --optimize-autoloader
 
-# Installer Composer depuis l'image officielle Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
-# Définir le répertoire de travail
-WORKDIR /var/www/symfony
-
-# Copier les fichiers du projet
+# Maintenant on copie le reste du projet
 COPY . .
 
-# Ajuster les permissions pour éviter les erreurs de Render
-RUN mkdir -p /var/www/symfony/var /var/www/symfony/node_modules \
-    && chown -R www-data:www-data /var/www/symfony
+# Vérifier si bin/console existe
+RUN ls -l /var/www/symfony/bin/
+
+# Assurer que le cache est bien géré
+RUN mkdir -p var/cache var/logs && chmod -R 777 var/cache var/logs
 
 # Passer à l’utilisateur www-data
 USER www-data
