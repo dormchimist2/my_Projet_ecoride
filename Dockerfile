@@ -27,6 +27,8 @@ COPY . /var/www/html
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html
 
+    RUN composer require symfony/runtime
+
 # Installation des dépendances PHP
 RUN composer install --no-interaction --optimize-autoloader --no-scripts
 
