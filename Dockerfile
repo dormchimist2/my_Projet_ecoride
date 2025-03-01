@@ -11,9 +11,10 @@ RUN apt-get update && apt-get install -y \
 
 # Activation des modules Apache
 RUN a2enmod rewrite
+
 # Installer Symfony CLI
-RUN curl -sS https://get.symfony.com/cli/installer | bash
-RUN mv /root/.symfony*/bin/symfony /usr/local/bin/symfony
+RUN curl -sS https://get.symfony.com/cli/installer | bash \
+    && mv /root/.symfony*/bin/symfony /usr/local/bin/symfony
 
 # Installation de Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -30,19 +31,24 @@ COPY . /var/www/html
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html
 
-    RUN composer require symfony/runtime
+# Ajouter Symfony runtime (si nécessaire)
+RUN composer require symfony/runtime
 
 # Installation des dépendances PHP
 RUN composer install --no-interaction --optimize-autoloader --no-scripts
 
-RUN composer dump-autoload --optimize && \
-    su www-data -s /bin/sh -c 'composer run-script auto-scripts'
+# Générer l'autoload optimisé pour Composer
+RUN composer dump-autoload --optimize
+
+# Exécuter les scripts post-installation de Composer
+RUN su www-data -s /bin/sh -c 'composer run-script auto-scripts'
 
 # Installation des dépendances Node.js et compilation Webpack Encore
 RUN yarn install && yarn encore production
 
-# Exécuter les migrations Doctrine au démarrage
-ENTRYPOINT ["docker/entrypoint.sh"]
+# Exécuter les migrations Doctrine au démarrage (si nécessaire)
+# Pour cette étape, tu peux définir un script qui exécutera les migrations en toute sécurité
+#ENTRYPOINT ["docker/entrypoint.sh"]
 
 # Démarrage d'Apache
 CMD ["apache2-foreground"]
