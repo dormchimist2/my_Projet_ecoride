@@ -133,11 +133,14 @@ class UserType extends AbstractType
                 'attr' => ['class' => 'btn btn-primary'],
             ]);
     }
-
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Userx::class,
+            'csrf_protection' => true,   //  Active la protection CSRF
+            'csrf_field_name' => '_token',
+            'csrf_token_id'   => 'user_form', // Identifiant unique pour éviter les conflits
         ]);
     }
+    
 }
