@@ -24,8 +24,8 @@ RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
     && apt-get install -y nodejs \
     && npm install --global yarn
 
-# Copie des fichiers du projet
-COPY . /var/www/html
+# Configurer Apache pour pointer vers /public
+RUN echo "DocumentRoot /var/www/html/public" > /etc/apache2/sites-available/000-default.conf
 
 # Copie des fichiers du projet
 COPY . /var/www/html
@@ -33,32 +33,16 @@ COPY . /var/www/html
 # Créer le fichier .htaccess dans le dossier public
 RUN echo '<IfModule mod_rewrite.c>\n\
     RewriteEngine On\n\
-    RewriteRule ^(index\.php/|app\.php/)?$ index.php [L]\n\
     RewriteCond %{REQUEST_FILENAME} !-f\n\
     RewriteCond %{REQUEST_FILENAME} !-d\n\
     RewriteRule ^(.*)$ /index.php [QSA,L]\n\
 </IfModule>' > /var/www/html/public/.htaccess
 
-# Configuration des permissions (pour éviter les erreurs avec Symfony)
+# Configuration des permissions (éviter les erreurs Symfony)
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html
-
-
-# Configuration des permissions (pour éviter les erreurs avec Symfony)
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html
-
-# Configurer Apache pour utiliser le dossier public
-RUN echo "DocumentRoot /var/www/html/public" > /etc/apache2/sites-available/000-default.conf
-RUN a2ensite 000-default.conf
-
-# Copier le fichier .htaccess dans le dossier public
-COPY .htaccess /var/www/html/public/
 
 # Exécuter les commandes Symfony en tant que www-data
-RUN su www-data -s /bin/sh -c 'composer require symfony/runtime'
-
-# Installation des dépendances PHP
 RUN su www-data -s /bin/sh -c 'composer install --no-interaction --optimize-autoloader'
 
 # Générer l'autoload optimisé pour Composer
@@ -75,9 +59,6 @@ RUN su www-data -s /bin/sh -c 'composer run-script auto-scripts'
 
 # Installation des dépendances Node.js et compilation Webpack Encore
 RUN su www-data -s /bin/sh -c 'yarn install && yarn encore production'
-
-# Redémarrer Apache
-RUN service apache2 restart
 
 # Démarrage d'Apache
 CMD ["apache2-foreground"]
