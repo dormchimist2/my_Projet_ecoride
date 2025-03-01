@@ -40,8 +40,10 @@ RUN su www-data -s /bin/sh -c 'composer install --no-interaction --optimize-auto
 # Générer l'autoload optimisé pour Composer
 RUN su www-data -s /bin/sh -c 'composer dump-autoload --optimize'
 
-# Exécuter les commandes Symfony en tant que www-data avec le bon répertoire public
+# Exécuter les commandes Symfony en tant que www-data
 RUN su www-data -s /bin/sh -c 'php bin/console cache:clear --no-warmup'
+
+# Installer les assets dans le répertoire public
 RUN su www-data -s /bin/sh -c 'php bin/console assets:install public'
 
 # Exécuter les scripts post-installation de Composer
