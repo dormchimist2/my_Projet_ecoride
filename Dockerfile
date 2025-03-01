@@ -31,14 +31,14 @@ COPY . /var/www/html
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html
 
-# Ajouter Symfony runtime (si nécessaire)
-RUN composer require symfony/runtime
+# Exécuter les commandes Symfony en tant que www-data
+RUN su www-data -s /bin/sh -c 'composer require symfony/runtime'
 
 # Installation des dépendances PHP
-RUN composer install --no-interaction --optimize-autoloader --no-scripts
+RUN su www-data -s /bin/sh -c 'composer install --no-interaction --optimize-autoloader --no-scripts'
 
 # Générer l'autoload optimisé pour Composer
-RUN composer dump-autoload --optimize
+RUN su www-data -s /bin/sh -c 'composer dump-autoload --optimize'
 
 # Exécuter les commandes Symfony en tant que www-data
 RUN su www-data -s /bin/sh -c 'php bin/console cache:clear --no-warmup'
@@ -48,7 +48,7 @@ RUN su www-data -s /bin/sh -c 'php bin/console assets:install %PUBLIC_DIR%'
 RUN su www-data -s /bin/sh -c 'composer run-script auto-scripts'
 
 # Installation des dépendances Node.js et compilation Webpack Encore
-RUN yarn install && yarn encore production
+RUN su www-data -s /bin/sh -c 'yarn install && yarn encore production'
 
 # Exécuter les migrations Doctrine au démarrage (si nécessaire)
 # Pour cette étape, tu peux définir un script qui exécutera les migrations en toute sécurité
