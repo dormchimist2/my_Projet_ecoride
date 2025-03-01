@@ -11,6 +11,9 @@ RUN apt-get update && apt-get install -y \
 
 # Activation des modules Apache
 RUN a2enmod rewrite
+# Installer Symfony CLI
+RUN curl -sS https://get.symfony.com/cli/installer | bash
+RUN mv /root/.symfony*/bin/symfony /usr/local/bin/symfony
 
 # Installation de Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
