@@ -27,6 +27,23 @@ RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
 # Copie des fichiers du projet
 COPY . /var/www/html
 
+# Copie des fichiers du projet
+COPY . /var/www/html
+
+# Créer le fichier .htaccess dans le dossier public
+RUN echo '<IfModule mod_rewrite.c>\n\
+    RewriteEngine On\n\
+    RewriteRule ^(index\.php/|app\.php/)?$ index.php [L]\n\
+    RewriteCond %{REQUEST_FILENAME} !-f\n\
+    RewriteCond %{REQUEST_FILENAME} !-d\n\
+    RewriteRule ^(.*)$ /index.php [QSA,L]\n\
+</IfModule>' > /var/www/html/public/.htaccess
+
+# Configuration des permissions (pour éviter les erreurs avec Symfony)
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html
+
+
 # Configuration des permissions (pour éviter les erreurs avec Symfony)
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html
