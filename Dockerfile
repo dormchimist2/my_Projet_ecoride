@@ -27,6 +27,7 @@ RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
 # Copie des fichiers du projet
 COPY . /var/www/html
 
+
 # Configuration des permissions (pour éviter les erreurs avec Symfony)
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html
