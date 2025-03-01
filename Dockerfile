@@ -31,11 +31,18 @@ COPY . /var/www/html
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html
 
+# Configurer Apache pour utiliser le dossier public
+RUN echo "DocumentRoot /var/www/html/public" > /etc/apache2/sites-available/000-default.conf
+RUN a2ensite 000-default.conf
+
+# Copier le fichier .htaccess dans le dossier public
+COPY .htaccess /var/www/html/public/
+
 # Exécuter les commandes Symfony en tant que www-data
 RUN su www-data -s /bin/sh -c 'composer require symfony/runtime'
 
 # Installation des dépendances PHP
-RUN su www-data -s /bin/sh -c 'composer install --no-interaction --optimize-autoloader --no-scripts'
+RUN su www-data -s /bin/sh -c 'composer install --no-interaction --optimize-autoloader'
 
 # Générer l'autoload optimisé pour Composer
 RUN su www-data -s /bin/sh -c 'composer dump-autoload --optimize'
@@ -52,9 +59,8 @@ RUN su www-data -s /bin/sh -c 'composer run-script auto-scripts'
 # Installation des dépendances Node.js et compilation Webpack Encore
 RUN su www-data -s /bin/sh -c 'yarn install && yarn encore production'
 
-# Exécuter les migrations Doctrine au démarrage (si nécessaire)
-# Pour cette étape, tu peux définir un script qui exécutera les migrations en toute sécurité
-#ENTRYPOINT ["docker/entrypoint.sh"]
+# Redémarrer Apache
+RUN service apache2 restart
 
 # Démarrage d'Apache
 CMD ["apache2-foreground"]
