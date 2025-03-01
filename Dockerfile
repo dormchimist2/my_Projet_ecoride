@@ -1,55 +1,40 @@
-FROM php:8.2-fpm-alpine
+# Utilisation de l'image officielle PHP 8.2 avec Apache
+FROM php:8.2-apache
 
-# Installer les paquets nécessaires, y compris PostgreSQL, Git, et ses dépendances
-RUN apk add --no-cache \
-    nginx \
-    nodejs \
-    yarn \
-    postgresql-dev \
-    git \
-    && docker-php-ext-install pdo pdo_pgsql intl opcache
+# Définition du dossier de travail
+WORKDIR /var/www/html
 
-# Créer un utilisateur non-root pour des raisons de sécurité
-RUN addgroup -g 1000 symfony && adduser -G symfony -u 1000 -D symfony
+# Installation des dépendances système
+RUN apt-get update && apt-get install -y \
+    git unzip curl libpq-dev libonig-dev libxml2-dev \
+    && docker-php-ext-install pdo pdo_pgsql opcache
 
-# Définir le répertoire de travail
-WORKDIR /var/www/symfony
+# Activation des modules Apache
+RUN a2enmod rewrite
 
-# Copier composer depuis l’image officielle
+# Installation de Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copier uniquement les fichiers nécessaires avant d'installer les dépendances
-COPY composer.json composer.lock symfony.lock ./
+# Installation de Node.js et Yarn pour Webpack Encore
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -y nodejs \
+    && npm install --global yarn
 
-# Passer à l'utilisateur non-root pour installer les dépendances avec Composer
-USER symfony
+# Copie des fichiers du projet
+COPY . /var/www/html
 
-# Installer les dépendances avec Composer
-RUN composer install --no-interaction --no-dev --optimize-autoloader
+# Configuration des permissions (pour éviter les erreurs avec Symfony)
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html
 
-# Revenir à www-data pour exécuter l’application
-USER www-data
+# Installation des dépendances PHP
+RUN composer install --no-interaction --optimize-autoloader
 
-# Copier le reste du projet
-COPY . .
+# Installation des dépendances Node.js et compilation Webpack Encore
+RUN yarn install && yarn encore production
 
-# Gérer les permissions pour les dossiers var/cache et var/logs
-RUN mkdir -p var/cache var/logs && chmod -R 777 var/cache var/logs
+# Exécuter les migrations Doctrine au démarrage
+ENTRYPOINT ["docker/entrypoint.sh"]
 
-# Installer Yarn et gérer les assets
-RUN yarn install --frozen-lockfile
-RUN yarn encore production
-
-# Effacer le cache Symfony
-RUN php bin/console cache:clear --env=prod --no-debug || true
-
-# Copier la configuration Nginx et le script de démarrage
-COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
-COPY start.sh /start.sh
-RUN chmod +x /start.sh
-
-# Exposer le port 80
-EXPOSE 80
-
-# Lancer Nginx et PHP-FPM
-ENTRYPOINT ["/start.sh"]
+# Démarrage d'Apache
+CMD ["apache2-foreground"]
