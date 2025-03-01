@@ -28,7 +28,10 @@ RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html
 
 # Installation des dépendances PHP
-RUN composer install --no-interaction --optimize-autoloader
+RUN composer install --no-interaction --optimize-autoloader --no-scripts
+
+RUN composer dump-autoload --optimize && \
+    su www-data -s /bin/sh -c 'composer run-script auto-scripts'
 
 # Installation des dépendances Node.js et compilation Webpack Encore
 RUN yarn install && yarn encore production
