@@ -40,6 +40,10 @@ RUN composer install --no-interaction --optimize-autoloader --no-scripts
 # Générer l'autoload optimisé pour Composer
 RUN composer dump-autoload --optimize
 
+# Exécuter les commandes Symfony en tant que www-data
+RUN su www-data -s /bin/sh -c 'php bin/console cache:clear --no-warmup'
+RUN su www-data -s /bin/sh -c 'php bin/console assets:install %PUBLIC_DIR%'
+
 # Exécuter les scripts post-installation de Composer
 RUN su www-data -s /bin/sh -c 'composer run-script auto-scripts'
 
