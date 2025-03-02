@@ -46,7 +46,8 @@ RUN chown -R www-data:www-data /var/www/html \
 RUN su www-data -s /bin/sh -c 'composer install --no-interaction --optimize-autoloader'
 
 # Vérifier la connexion à PostgreSQL
-RUN su www-data -s /bin/sh -c 'php bin/console doctrine:database:info'
+RUN su www-data -s /bin/sh -c 'php bin/console doctrine:database:create --if-not-exists'
+
 
 # Exécuter les migrations pour éviter l'erreur "relation userx does not exist"
 RUN su www-data -s /bin/sh -c 'php bin/console doctrine:migrations:migrate --no-interaction'
