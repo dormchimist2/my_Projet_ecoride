@@ -1,18 +1,17 @@
 doctrine:
     dbal:
         driver: 'pdo_pgsql'
+        # Utilisation de la variable d'environnement DATABASE_URL pour la configuration de la base de données
         url: '%env(resolve:DATABASE_URL)%'
         charset: 'UTF8'
-        server_version: 
-
-        # IMPORTANT: You MUST configure your server version,
-        # either here or in the DATABASE_URL env var (see .env file)
-        #server_version: '16'
+        server_version: '%env(DATABASE_SERVER_VERSION)%'  # Optionnel, tu peux également configurer ça dans l'URL ou l'environnement
 
         profiling_collect_backtrace: '%kernel.debug%'
         use_savepoints: true
+
     orm:
-        auto_generate_proxy_classes: true
+        # Configuration de l'ORM
+        auto_generate_proxy_classes: true  # Active en développement, désactive en production
         enable_lazy_ghost_objects: true
         report_fields_where_declared: true
         validate_xml_mapping: true
@@ -30,16 +29,21 @@ doctrine:
         controller_resolver:
             auto_mapping: false
 
+# Spécifique à l'environnement de test
 when@test:
     doctrine:
         dbal:
-        logging: true
-            # "TEST_TOKEN" is typically set by ParaTest
-            dbname_suffix: '_test%env(default::TEST_TOKEN)%'
+            logging: true  # Active le logging pour les tests
+            dbname_suffix: '_test%env(default::TEST_TOKEN)%'  # Utilise une variable d'environnement TEST_TOKEN pour suffixer le nom de la base de données pour les tests
 
+# Spécifique à l'environnement de production
 when@prod:
     doctrine:
+        dbal:
+            # Désactivation des logs en production
+            logging: false
         orm:
+            # En production, désactive la génération automatique des proxies et configure les caches
             auto_generate_proxy_classes: false
             proxy_dir: '%kernel.build_dir%/doctrine/orm/Proxies'
             query_cache_driver:
@@ -53,6 +57,6 @@ when@prod:
         cache:
             pools:
                 doctrine.result_cache_pool:
-                    adapter: cache.app
+                    adapter: cache.app  # Pool pour le cache des résultats de Doctrine
                 doctrine.system_cache_pool:
-                    adapter: cache.system
+                    adapter: cache.system  # Pool pour le cache système de Doctrine
