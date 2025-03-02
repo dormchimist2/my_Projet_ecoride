@@ -1,71 +1,37 @@
-# Utilisation de l'image officielle PHP 8.2 avec Apache
-FROM php:8.2-apache
+# Utiliser l'image officielle PHP avec FPM
+FROM php:8.2-fpm
 
-# Définition du dossier de travail
+# Installer les dépendances système nécessaires pour Symfony et PostgreSQL
+RUN apt-get update && apt-get install -y \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    zip \
+    git \
+    unzip \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Installer Composer (gestionnaire de dépendances PHP)
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# Définir le répertoire de travail
 WORKDIR /var/www/html
 
-# Installation des dépendances système
-RUN apt-get update && apt-get install -y \
-    git unzip curl libpq-dev libonig-dev libxml2-dev \
-    && docker-php-ext-install pdo pdo_pgsql opcache
+# Copier tout le projet Symfony dans le conteneur
+COPY . .
 
-# Activation des modules Apache
-RUN a2enmod rewrite
+# Donner les bonnes permissions pour l'utilisateur www-data (utilisateur par défaut pour PHP)
+RUN chown -R www-data:www-data /var/www/html
 
-# Installer Symfony CLI
-RUN curl -sS https://get.symfony.com/cli/installer | bash \
-    && mv /root/.symfony*/bin/symfony /usr/local/bin/symfony
-
-# Installation de Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
-# Installation de Node.js et Yarn pour Webpack Encore
-RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
-    && apt-get install -y nodejs \
-    && npm install --global yarn
-
-# Configurer Apache pour pointer vers /public
-RUN echo "DocumentRoot /var/www/html/public" > /etc/apache2/sites-available/000-default.conf
-
-# Copie des fichiers du projet
-COPY . /var/www/html
-
-# Créer le fichier .htaccess dans le dossier public
-RUN echo '<IfModule mod_rewrite.c>\n\
-    RewriteEngine On\n\
-    RewriteCond %{REQUEST_FILENAME} !-f\n\
-    RewriteCond %{REQUEST_FILENAME} !-d\n\
-    RewriteRule ^(.*)$ /index.php [QSA,L]\n\
-</IfModule>' > /var/www/html/public/.htaccess
-
-# Configuration des permissions (éviter les erreurs Symfony)
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html
-
-# Exécuter les commandes Symfony en tant que www-data
+# Installer les dépendances PHP sans interagir, en optimisant l'autoload
 RUN su www-data -s /bin/sh -c 'composer install --no-interaction --optimize-autoloader'
 
-# Vérifier la connexion à PostgreSQL
-RUN su www-data -s /bin/sh -c 'php bin/console doctrine:database:create --if-not-exists'
+# Si tu as des commandes spécifiques à Symfony, comme le nettoyage du cache, les exécuter en tant que www-data
+RUN su www-data -s /bin/sh -c 'php bin/console cache:clear --env=prod'
 
+# Exposer le port 9000 pour PHP-FPM
+EXPOSE 9000
 
-# Exécuter les migrations pour éviter l'erreur "relation userx does not exist"
-RUN su www-data -s /bin/sh -c 'php bin/console doctrine:migrations:migrate --no-interaction'
-
-# Générer l'autoload optimisé pour Composer
-RUN su www-data -s /bin/sh -c 'composer dump-autoload --optimize'
-
-# Nettoyer le cache Symfony
-RUN su www-data -s /bin/sh -c 'php bin/console cache:clear --no-warmup'
-
-# Installer les assets dans le répertoire public
-RUN su www-data -s /bin/sh -c 'php bin/console assets:install public'
-
-# Exécuter les scripts post-installation de Composer
-RUN su www-data -s /bin/sh -c 'composer run-script auto-scripts'
-
-# Installation des dépendances Node.js et compilation Webpack Encore (si Webpack est présent)
-RUN su www-data -s /bin/sh -c 'if [ -f "webpack.config.js" ]; then yarn encore production; fi'
-
-# Démarrage d'Apache
-CMD ["apache2-foreground"]
+# Démarrer PHP-FPM
+CMD ["php-fpm"]
