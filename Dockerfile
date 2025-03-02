@@ -45,10 +45,16 @@ RUN chown -R www-data:www-data /var/www/html \
 # Exécuter les commandes Symfony en tant que www-data
 RUN su www-data -s /bin/sh -c 'composer install --no-interaction --optimize-autoloader'
 
+# Vérifier la connexion à PostgreSQL
+RUN su www-data -s /bin/sh -c 'php bin/console doctrine:database:info'
+
+# Exécuter les migrations pour éviter l'erreur "relation userx does not exist"
+RUN su www-data -s /bin/sh -c 'php bin/console doctrine:migrations:migrate --no-interaction'
+
 # Générer l'autoload optimisé pour Composer
 RUN su www-data -s /bin/sh -c 'composer dump-autoload --optimize'
 
-# Exécuter les commandes Symfony en tant que www-data
+# Nettoyer le cache Symfony
 RUN su www-data -s /bin/sh -c 'php bin/console cache:clear --no-warmup'
 
 # Installer les assets dans le répertoire public
@@ -57,8 +63,8 @@ RUN su www-data -s /bin/sh -c 'php bin/console assets:install public'
 # Exécuter les scripts post-installation de Composer
 RUN su www-data -s /bin/sh -c 'composer run-script auto-scripts'
 
-# Installation des dépendances Node.js et compilation Webpack Encore
-RUN su www-data -s /bin/sh -c 'yarn install && yarn encore production'
+# Installation des dépendances Node.js et compilation Webpack Encore (si Webpack est présent)
+RUN su www-data -s /bin/sh -c 'if [ -f "webpack.config.js" ]; then yarn encore production; fi'
 
 # Démarrage d'Apache
 CMD ["apache2-foreground"]
