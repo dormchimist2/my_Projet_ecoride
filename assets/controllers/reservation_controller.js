@@ -30,7 +30,7 @@ export default class extends Controller {
   
     // Ajouter le formulaire sans effacer les autres éléments
     document.querySelector(`#reserve-container-${trajetId}`).insertAdjacentHTML("beforeend", formHtml);
-    // 🎯 Ajouter un écouteur d'événement sur le bouton "Valider"
+    //  Ajouter un écouteur d'événement sur le bouton "Valider"
     document.getElementById(`validate-button-${trajetId}`).addEventListener("click", (event) => this.calculateCreditCost(event));
   }
   
@@ -82,71 +82,62 @@ showReservationCalcule(trajetId, totalCredits, nbPlaces) {
 
 
 async confirmReservation(event) {
-    const trajetId = event.currentTarget.dataset.trajetId;
-    
-    // Récupérer le nombre de places depuis le bouton "Payer"
-    const nbPlaces = parseInt(event.currentTarget.dataset.nbPlaces);
-    if (isNaN(nbPlaces) || nbPlaces <= 0) {
-        alert("Erreur : Impossible de récupérer le nombre de places.");
-        return;
-    }
+  const trajetId = event.currentTarget.dataset.trajetId;
+  const nbPlaces = parseInt(event.currentTarget.dataset.nbPlaces, 10);
+  const creditCostElement = parseInt(event.currentTarget.dataset.totalCredits, 10);
 
-    // Extrait le coût total
-    const creditCostElement = document.getElementById(`credit-cost-${trajetId}`);
-    console.log("Élément crédit trouvé ?", creditCostElement);
+  console.log("Test - Crédit coût:", creditCostElement);
+  console.log("Test - Trajet ID:", trajetId);
+  console.log("Test - Nombre de places:", nbPlaces);
 
-    if (!creditCostElement) {
-        alert("Erreur : Élément coût total introuvable.");
-        return;
-    }
+  if (!creditCostElement || !nbPlaces || !trajetId) {
+      alert("Erreur : Informations de réservation incomplètes.");
+      return;
+  }
 
-    const creditCostText = creditCostElement.innerText;
-    console.log("Texte affiché dans #credit-cost:", creditCostText);
+  try {
+      // Vérifier le solde du passager
+      const soldeResponse = await fetch('/passager/solde');
+      if (!soldeResponse.ok) throw new Error("Impossible de récupérer votre solde.");
 
-    // Capture uniquement les nombres après "Coût total :"
-    const totalCreditsMatch = creditCostText.match(/(\d+)/); // Capture uniquement les nombres
-    const totalCredits = totalCreditsMatch ? parseInt(totalCreditsMatch[0], 10) : NaN;
+      const soldeData = await soldeResponse.json();
+      const soldePassager = soldeData.soldePassager;
+      console.log("Solde passager:", soldePassager);
 
-    if (isNaN(totalCredits) || totalCredits <= 0) {
-        alert("Erreur : Impossible de récupérer le coût total site en travaux veillez nous exusez.");
-        return;
-    }
+      // Vérifier si le passager a assez de crédits
+      if (soldePassager < creditCostElement) {
+          alert("Vous n'avez pas assez de crédits.");
+          return;
+      }
 
-    console.log("Nombre de places:", nbPlaces);
-    console.log("Total crédits:", totalCredits);
+      // 🔹 CORRECTION : JSON.stringify() prend un objet
+      const data = {
+          nbPlaces: nbPlaces,
+          totalCredits: creditCostElement
+      };
+      console.log("Données envoyées:", JSON.stringify(data));
 
-    try {
-        // Vérifier le solde du passager
-        const soldeResponse = await fetch('/passager/solde');
-        if (!soldeResponse.ok) throw new Error("Impossible de récupérer le solde.");
-        const soldeData = await soldeResponse.json();
-        const soldePassager = soldeData.soldePassager;
+      // Réaliser la réservation
+      const response = await fetch(`/covoiturage/${trajetId}/reserver`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+      });
 
-        // Vérifier si le passager a assez de crédits
-        if (soldePassager < totalCredits) {
-            alert("Vous n'avez pas assez de crédits.");
-            return;
-        }
+      const responseData = await response.json();
+console.log("Réponse du serveur:", responseData);
 
-        // Réaliser la réservation
-        const response = await fetch(`/covoiturage/${trajetId}/reserver`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ nbPlaces, totalCredits }),
-        });
+      if (!response.ok) throw new Error("Erreur lors de la réservation.");
 
-        if (!response.ok) throw new Error("Erreur lors de la réservation.");
+      alert("Réservation confirmée !");
 
-        alert("Réservation confirmée !");
-
-        // Suppression des éléments
-        document.getElementById(`reservation-form-${trajetId}`)?.remove();
-        document.getElementById(`reservation-calcule-${trajetId}`)?.remove();
-    } catch (error) {
-        alert("Erreur : " + error.message);
-    }
+      // Suppression des éléments
+      document.getElementById(`reservation-form-${trajetId}`)?.remove();
+      document.getElementById(`reservation-calcule-${trajetId}`)?.remove();
+  } catch (error) {
+      alert("Erreur : " + error.message);
+  }
 }
-
 
 
 }

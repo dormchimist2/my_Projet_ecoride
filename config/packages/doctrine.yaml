@@ -4,7 +4,7 @@ doctrine:
         # Utilisation de la variable d'environnement DATABASE_URL pour la configuration de la base de données
         url: '%env(resolve:DATABASE_URL)%'
         charset: 'UTF8'
-        server_version: '%env(DATABASE_SERVER_VERSION)%'  # Optionnel, tu peux également configurer ça dans l'URL ou l'environnement
+        server_version: #'%env(DATABASE_SERVER_VERSION)%'  # Optionnel, tu peux également configurer ça dans l'URL ou l'environnement
 
         profiling_collect_backtrace: '%kernel.debug%'
         use_savepoints: true

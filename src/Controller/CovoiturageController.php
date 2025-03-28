@@ -83,14 +83,15 @@ public function calculerCredit(int $id, Request $request, CovoiturageRepository 
         return new JsonResponse(["error" => "Données invalides"], Response::HTTP_BAD_REQUEST);
     }
 
-    $prixTotal = $covoiturage->getPrix() * $nbPlaces;
+    $prixTotal = $covoiturage->getPrix();
     $commissionEcoRide = 2;
-    $totalCredits = $prixTotal + $commissionEcoRide;
+    $totalCredits = ($prixTotal + $commissionEcoRide)*$nbPlaces;
 
     return new JsonResponse(["totalCredits" => $totalCredits]);
 }
 // Recuperation du credit du passager
 
+#[Route('/passager/solde', name: 'passager_solde', methods: ['GET'])]
 public function getSoldePassager(Security $security): JsonResponse
 {
     $user = $security->getUser();
@@ -115,54 +116,83 @@ public function reserver(
     Request $request,
     Security $security,
     EntityManagerInterface $entityManager,
-    CovoiturageRepository $covoiturageRepository,
-    UserRepository $userRepository
+    CovoiturageRepository $covoiturageRepository
 ): JsonResponse {
-    $user = $security->getUser();
-    if (!$user) {
-        return new JsonResponse(["error" => "Utilisateur non connecté"], Response::HTTP_UNAUTHORIZED);
+    try {
+        // Vérification de l'utilisateur connecté
+        $user = $security->getUser();
+        if (!$user) {
+            return new JsonResponse(["error" => "Utilisateur non connecté"], Response::HTTP_UNAUTHORIZED);
+        }
+
+        // Récupération du covoiturage
+        $covoiturage = $covoiturageRepository->find($id);
+        if (!$covoiturage) {
+            return new JsonResponse(["error" => "Covoiturage introuvable"], Response::HTTP_NOT_FOUND);
+        }
+
+        // Vérification du compte utilisateur
+        $compte = $user->getCompte();
+        if (!$compte) {
+            return new JsonResponse(["error" => "Compte utilisateur introuvable"], Response::HTTP_NOT_FOUND);
+        }
+
+        // Lecture des données JSON envoyées
+        $data = json_decode($request->getContent(), true);
+        if (!$data || !isset($data['nbPlaces']) || !isset($data['totalCredits'])) {
+            return new JsonResponse(["error" => "Données JSON invalides"], Response::HTTP_BAD_REQUEST);
+        }
+
+        // Récupération et validation des valeurs
+        $nbPlacesReserve = (int) $data['nbPlaces'];
+        $totalCredits = (float) $data['totalCredits'];
+
+        if ($nbPlacesReserve <= 0) {
+            return new JsonResponse(["error" => "Nombre de places invalide"], Response::HTTP_BAD_REQUEST);
+        }
+
+        if ($covoiturage->getNbPlace() < $nbPlacesReserve) {
+            return new JsonResponse(["error" => "Places insuffisantes"], Response::HTTP_BAD_REQUEST);
+        }
+
+        // Vérification du solde
+        if ($compte->getSolde() < $totalCredits) {
+            return new JsonResponse(["error" => "Crédits insuffisants"], Response::HTTP_BAD_REQUEST);
+        }
+
+        // Déduction du passager
+        $compte->setSolde($compte->getSolde() - $totalCredits);
+
+        // Vérification du compte du conducteur
+        $conducteur = $covoiturage->getUser();
+        $conducteurCompte = $conducteur->getCompte();
+        if (!$conducteurCompte) {
+            return new JsonResponse(["error" => "Compte du conducteur introuvable"], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        // Ajout au solde du conducteur après déduction de la commission
+        $commissionEcoRide = 2;
+        $conducteurCompte->setSolde($conducteurCompte->getSolde() + ($totalCredits - $commissionEcoRide * $nbPlacesReserve));
+
+        // Mise à jour des places restantes
+        $covoiturage->setNbPlace($covoiturage->getNbPlace() - $nbPlacesReserve);
+
+        // Création de la réservation
+        $reservation = new Reservation();
+        $reservation->setUser($user);
+        $reservation->setCovoiturage($covoiturage);
+        $reservation->setNbPlaces($nbPlacesReserve);
+        $reservation->setStatus("confirmé");
+        $reservation->setTotalPrix($totalCredits);
+
+        $entityManager->persist($reservation);
+        $entityManager->flush();
+
+        return new JsonResponse(["message" => "Réservation confirmée"], Response::HTTP_OK);
+    } catch (\Exception $e) {
+        return new JsonResponse(["error" => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
     }
-
-    $covoiturage = $covoiturageRepository->find($id);
-    if (!$covoiturage) {
-        return new JsonResponse(["error" => "Covoiturage introuvable"], Response::HTTP_NOT_FOUND);
-    }
-
-    $data = json_decode($request->getContent(), true);
-    $nbPlaces = $data['nbPlaces'] ?? 1;
-
-    if (!is_int($nbPlaces) || $nbPlaces <= 0) {
-        return new JsonResponse(["error" => "Nombre de places invalide"], Response::HTTP_BAD_REQUEST);
-    }
-
-    if ($covoiturage->getNbPlace() < $nbPlaces) {
-        return new JsonResponse(["error" => "Places insuffisantes"], Response::HTTP_BAD_REQUEST);
-    }
-
-    $prixTotal = $covoiturage->getPrix() * $nbPlaces;
-    $commissionEcoRide = 2;
-    $totalCredits = $prixTotal + $commissionEcoRide;
-
-    if ($user->getCredit() < $totalCredits) {
-        return new JsonResponse(["error" => "Crédits insuffisants"], Response::HTTP_BAD_REQUEST);
-    }
-
-    $user->setCredit($user->getCredit() - $totalCredits);
-    $conducteur = $covoiturage->getUser();
-    $conducteur->setCredit($conducteur->getCredit() + $prixTotal);
-    $covoiturage->setNbPlace($covoiturage->getNbPlace() - $nbPlaces);
-
-    $reservation = new Reservation();
-    $reservation->setUser($user);
-    $reservation->setCovoiturage($covoiturage);
-    $reservation->setNbPlaces($nbPlaces);
-    $reservation->setStatus("confirmé");
-    $reservation->setTotalPrix($totalCredits);
-
-    $entityManager->persist($reservation);
-    $entityManager->flush();
-
-    return new JsonResponse(["message" => "Réservation confirmée"], Response::HTTP_OK);
 }
+
 
 }
