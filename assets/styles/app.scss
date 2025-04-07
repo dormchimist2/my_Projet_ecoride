@@ -424,3 +424,21 @@ footer {
     background-color:rgba(75, 127, 82, 0.4);
    
 }
+/*****************demarrage et stopper covoiturage effet bouton fondu
+
+/* Ajouter une transition de fondu */
+.fade {
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+  }
+  
+  /* Cette classe permet d'afficher les éléments après leur apparition */
+  .fade.show {
+    opacity: 1;
+  }
+  
+  /* Cette classe permet d'appliquer une animation de disparition */
+  .fade.hide {
+    opacity: 0;
+  }
+  

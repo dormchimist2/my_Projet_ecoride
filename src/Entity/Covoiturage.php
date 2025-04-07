@@ -61,6 +61,15 @@ private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'covoiturages')]
     private ?PreferenceCdt $preferenceCdt = null;
+    
+    public const STATUS_EN_ATTENTE = 'en attente';
+    public const STATUS_EN_COURS = 'en cours';
+    public const STATUS_TERMINE = 'terminé';
+    public const STATUS_ANNULE = 'annulé';
+
+    #[ORM\Column(type: 'string', length: 20, options: ['default' => 'en attente'])]
+    private string $status = self::STATUS_EN_ATTENTE;
+
 
     /**
      * @var Collection<int, Reservation>
@@ -239,4 +248,25 @@ private ?int $id = null;
 
         return $this;
     }
+
+    public function getStatus(): string
+    {
+        return $this->status;
+    }
+
+    public function demarrer(): void
+{
+    $this->status = self::STATUS_EN_COURS;
+}
+
+public function terminer(): void
+{
+    $this->status = self::STATUS_TERMINE;
+}
+
+public function annuler(): void
+{
+    $this->status = self::STATUS_ANNULE;
+}
+
 }

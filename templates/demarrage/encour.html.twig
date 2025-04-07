@@ -1,0 +1,103 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails du covoiturage{% endblock %}
+
+{% block body %}
+<div class="text-center text-primary mb-6">
+    <h1>Covoiturage en cours</h1>
+</div>
+
+{% if message is defined %}
+    <div class="alert alert-warning text-center">{{ message }}</div>
+{% endif %}
+
+{% if dateDepart is defined %}
+<div class="container my-4 p-3 border rounded shadow-sm bg-light">
+    <div class="text-center mb-4">
+        <h2 class="text-primary">{{ dateDepart|date('d F Y', 'Europe/Paris') }}</h2>
+        <div class="d-flex align-items-center justify-content-between">
+
+            <!-- Départ -->
+            <div class="text-start position-relative">
+                <h4 class="fw-bold text-primary text-center">{{ pointDepart }}</h4>
+                <div class="d-flex align-items-center">
+                    <div class="circle"></div>
+                    <p class="text-muted mb-0 ms-2"><i class="bi bi-clock"></i> {{ heureDepart|date('H:i') }}</p>
+                </div>
+            </div>
+
+            <!-- Ligne entre les points -->
+            <div class="flex-grow-1 position-relative">
+                <div class="line"></div>
+            </div>
+            
+            <!-- Arrivée -->
+            <div class="text-end position-relative">
+                <h4 class="fw-bold text-success text-center">{{ pointArrivee }}</h4>
+                <div class="d-flex align-items-center justify-content-end">
+                    <p class="text-muted mb-0 me-2"><i class="bi bi-clock"></i> {{ heureArrivee|date('H:i') }}</p>
+                    <div class="circle"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Bloc Passagers -->
+    <div class="container my-4 p-4 rounded shadow-sm conducteur-block">
+        <h3 class="text-center conducteur-title">Passagers</h3>
+
+        <div class="d-flex align-items-center justify-content-center mt-3">
+            <ul class="list-unstyled">
+                {% if passagers is not empty %}
+                    {% for passager in passagers %}
+                        <li class="conducteur-pseudo"><h5>{{ passager.pseudo }}</h5></li>
+                    {% endfor %}
+                {% else %}
+                    <li class="conducteur-pseudo">Aucun passager</li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-center mt-3">
+        <div data-controller="demarrage-stop-covoiturage" 
+            data-demarrage-stop-covoiturage-trajet-id-value="{{ trajetId }}">
+
+<div class="text-center mt-3">
+        <strong>Statut : </strong> 
+        <span data-demarrage-stop-covoiturage-target="status">{{ status }}</span>
+        <p>{{ trajetId }}</p>
+    </div>
+
+            {% if status == 'en attente' %}
+                <button 
+                    data-action="click->demarrage-stop-covoiturage#demarrer" 
+                    data-demarrage-stop-covoiturage-target="startButton"
+                    class="btn btn-success"
+                >
+                    Démarrer
+                </button>
+
+                <button 
+                data-action="click->demarrage-stop-covoiturage#annuler" 
+                data-demarrage-stop-covoiturage-target="cancelButton"
+                class="btn btn-warning mt-4"
+            >
+                Annuler
+            </button>
+
+            {% elseif status == 'en cours' %}
+                <button 
+                    data-action="click->demarrage-stop-covoiturage#stopper" 
+                    data-demarrage-stop-covoiturage-target="stopButton"
+                    class="btn btn-danger"
+                >
+                    Stopper
+                </button>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
