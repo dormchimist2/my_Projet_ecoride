@@ -18,6 +18,8 @@ class UserType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $isAdmin = $options['is_admin_creation'] ?? false;
+
         $builder
             ->add('email', EmailType::class, [
                 'label' => 'Adresse e-mail',
@@ -26,8 +28,9 @@ class UserType extends AbstractType
                     new Assert\NotBlank(),
                     new Assert\Email(),
                 ],
-            ])
-            ->add('roles', ChoiceType::class, [
+            ]);
+            if (!$isAdmin) {
+                $builder->add('roles', ChoiceType::class, [
                 'choices' => [
                     'Utilisateur' => 'ROLE_USER',
                     'Conducteur' => 'ROLE_CONDUCTEUR',
@@ -37,8 +40,9 @@ class UserType extends AbstractType
                 'expanded' => true,
                 'multiple' => true,
                 'label' => 'Rôles',
-            ])
-
+            ]);
+            }
+            $builder
             ->add('password', PasswordType::class, [
                 'label' => 'Mot de passe',
                 'required' => true,
@@ -140,6 +144,7 @@ class UserType extends AbstractType
             'csrf_protection' => true,   //  Active la protection CSRF
             'csrf_field_name' => '_token',
             'csrf_token_id'   => 'user_form', // Identifiant unique pour éviter les conflits
+            'is_admin_creation' => false, 
         ]);
     }
     

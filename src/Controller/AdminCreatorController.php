@@ -1,7 +1,9 @@
 <?php
+
 namespace App\Controller;
 
 use App\Entity\Userx;
+use App\Form\UserType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,14 +22,31 @@ class AdminCreatorController extends AbstractController
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         $user = new Userx();
-        $user->setEmail($request->get('email'));
-        $user->setRoles(['ROLE_EMPLOYE']);
-        $hashedPassword = $passwordHasher->hashPassword($user, $request->get('password'));
-        $user->setPassword($hashedPassword);
 
-        $entityManager->persist($user);
-        $entityManager->flush();
+        $form = $this->createForm(UserType::class, $user, [
+            'is_admin_creation' => true
+        ]);
+        $form->handleRequest($request);
 
-        return new Response('Employé créé avec succès.');
+        if ($form->isSubmitted() && $form->isValid()) {
+            $user = $form->getData();
+
+            // Définir un rôle spécifique, ici "employé"
+            $user->setRoles(['ROLE_EMPLOYE']);
+
+            // Hachage du mot de passe
+            $hashedPassword = $passwordHasher->hashPassword($user, $user->getPassword());
+            $user->setPassword($hashedPassword);
+
+            $entityManager->persist($user);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Employé créé avec succès');
+            return $this->redirectToRoute('admin_create_employee');
+        }
+
+        return $this->render('user/admin/create_employee.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
 }

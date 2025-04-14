@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Détail du Covoiturage {% endblock %}
+
+{% block body %}
+<div class="text-center mb-4">
+    <h2 class="text-primary"><i class="bi bi-calendar-check"></i> Suivi de vos réservations</h2>
+</div>
+
+<ul class="list-group">
+    {% for r in reservations %}
+        <li class="list-group-item mb-4 p-4 shadow-sm rounded-3">
+            <h5 class="mb-3 text-secondary">🆔 Réservation #{{ r.id }}</h5>
+
+            <p><i class="bi bi-clock-history"></i> <strong>Date de réservation :</strong> {{ r.createdAt|date("d/m/Y à H:i") }}</p>
+            <p><i class="bi bi-people-fill"></i> <strong>Places réservées :</strong> {{ r.nbPlaces }}</p>
+            <p><i class="bi bi-currency-euro"></i> <strong>Coût :</strong> {{ r.totalPrix }} crédit(s)</p>
+
+            {% set c = r.covoiturage %}
+
+            {% if c %}
+                <div class="card mt-4">
+                    <div class="card-header bg-primary text-white">
+                        <h6 class="mb-0">🛣️ Détails du covoiturage</h6>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Date :</strong> {{ c.dateDepart|date("d/m/Y") }}</p>
+                        <p><strong>Départ :</strong> {{ c.pointDepart }} à {{ c.heureDepart|date("H:i") }}</p>
+                        <p><strong>Arrivée :</strong> {{ c.pointArrivee }} à {{ c.heureArrivee|date("H:i") }}</p>
+                        <p><strong>Conducteur :</strong> {{ c.user.pseudo }}</p>
+{% set readable_status = {
+    'en cours': ' Ecoride vous souhaite bonne route',
+    'annulé': 'Le conducteur ne peut plus assurer ce trajet. Veuillez nous excuser pour la gêne occasionnée.',
+    'terminé': 'Vous avez dejà participé a ce covoiturage.',
+    'en attente': 'Préparez votre départ pour ' ~ c.pointArrivee ~ '.'
+} %}
+
+{% set status_colors = {
+    'en cours': 'bg-success text-white',
+    'annulé': 'bg-danger text-white',
+    'terminé': 'bg-light text-dark',
+    'en attente': 'bg-warning text-dark'
+} %}
+
+
+<p class="text-center mt-3">
+    <i class="bi bi-info-circle-fill"></i><br>
+    <strong class="fs-5 d-block mt-2">Statut</strong>
+    <span class="badge {{ status_colors[c.status]|default('bg-info text-dark') }} fs-4 px-4 py-2">
+        {{ readable_status[c.status]|default(c.status) }}
+    </span>
+</p>
+
+
+
+                    </div>
+                </div>
+            {% else %}
+                <p class="text-danger"><em>Aucun covoiturage associé trouvé.</em></p>
+            {% endif %}
+        </li>
+    {% else %}
+        <li class="list-group-item text-center text-muted">
+            Vous n'avez pas encore effectué de réservation.
+        </li>
+    {% endfor %}
+</ul>
+
+
+
+{% endblock %}
