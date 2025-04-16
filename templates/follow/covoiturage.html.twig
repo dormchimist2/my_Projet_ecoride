@@ -28,32 +28,50 @@
                         <p><strong>Départ :</strong> {{ c.pointDepart }} à {{ c.heureDepart|date("H:i") }}</p>
                         <p><strong>Arrivée :</strong> {{ c.pointArrivee }} à {{ c.heureArrivee|date("H:i") }}</p>
                         <p><strong>Conducteur :</strong> {{ c.user.pseudo }}</p>
-{% set readable_status = {
-    'en cours': ' Ecoride vous souhaite bonne route',
-    'annulé': 'Le conducteur ne peut plus assurer ce trajet. Veuillez nous excuser pour la gêne occasionnée.',
-    'terminé': 'Vous avez dejà participé a ce covoiturage.',
-    'en attente': 'Préparez votre départ pour ' ~ c.pointArrivee ~ '.'
-} %}
 
-{% set status_colors = {
-    'en cours': 'bg-success text-white',
-    'annulé': 'bg-danger text-white',
-    'terminé': 'bg-light text-dark',
-    'en attente': 'bg-warning text-dark'
-} %}
+                        {% set readable_status = {
+                            'en cours': ' Ecoride vous souhaite bonne route',
+                            'annulé': 'Le conducteur ne peut plus assurer ce trajet. Veuillez nous excuser pour la gêne occasionnée.',
+                            'terminé': 'Vous avez dejà participé a ce covoiturage.',
+                            'en attente': 'Préparez votre départ pour ' ~ c.pointArrivee ~ '.'
+                        } %}
 
+                        {% set status_colors = {
+                            'en cours': 'bg-success text-white',
+                            'annulé': 'bg-danger text-white',
+                            'terminé': 'bg-light text-dark',
+                            'en attente': 'bg-warning text-dark'
+                        } %}
 
-<p class="text-center mt-3">
-    <i class="bi bi-info-circle-fill"></i><br>
-    <strong class="fs-5 d-block mt-2">Statut</strong>
-    <span class="badge {{ status_colors[c.status]|default('bg-info text-dark') }} fs-4 px-4 py-2">
-        {{ readable_status[c.status]|default(c.status) }}
-    </span>
-</p>
+                        <p class="text-center mt-3">
+                            <i class="bi bi-info-circle-fill"></i><br>
+                            <strong class="fs-5 d-block mt-2">Statut</strong>
+                            <span class="badge {{ status_colors[c.status]|default('bg-info text-dark') }} fs-4 px-4 py-2">
+                                {{ readable_status[c.status]|default(c.status) }}
+                            </span>
+                        </p>
 
-
+                        {% if c.status == 'terminé' %}
+                            <div class="mt-3 text-center">
+                                <a href="{{ path('covoiturage_avis_conducteur', {id: c.id}) }}" class="btn btn-outline-primary">
+                                    Mettre un commentaire
+                                </a>
+                            </div>
+                        {% endif %}
 
                     </div>
+                    {#  Affichage des messages flash  pour le commentaire#}
+                    {% for label, messages in app.flashes %}
+    {% for message in messages %}
+        <div class="alert alert-{{ label == 'success' ? 'success' : (label == 'warning' ? 'warning' : 'info') }} alert-dismissible fade show text-center" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+        </div>
+    {% endfor %}
+{% endfor %}
+
+
+
                 </div>
             {% else %}
                 <p class="text-danger"><em>Aucun covoiturage associé trouvé.</em></p>
@@ -65,7 +83,4 @@
         </li>
     {% endfor %}
 </ul>
-
-
-
 {% endblock %}

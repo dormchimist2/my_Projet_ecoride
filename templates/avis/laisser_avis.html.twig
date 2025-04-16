@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Laisser un avis{% endblock %}
+
+{% block body %}
+<div class="container mt-5 d-flex justify-content-center">
+    <div class="card shadow-lg p-4 w-100" style="max-width: 600px;">
+        <div class="card-body">
+            <h2 class="text-center text-primary mb-4">
+                <i class="bi bi-chat-left-text-fill"></i> Donnez votre avis
+            </h2>
+            <h5 class="text-center text-muted mb-4">
+                sur le conducteur <strong>{{ covoiturage.user.pseudo }}</strong>
+            </h5>
+
+            {{ form_start(form) }}
+                <div class="mb-3">
+    {{ form_label(form.note) }}
+    {{ form_widget(form.note, {'attr': {'oninput': 'noteValue.value = this.value'}}) }}
+    <div class="text-center mt-2">
+        <output id="noteValue">3</output> / 5
+    </div>
+    {{ form_errors(form.note) }}
+</div>
+
+
+                <div class="mb-3">
+                    {{ form_label(form.commentaire, null, {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.commentaire, {'attr': {'class': 'form-control', 'rows': 4}}) }}
+                    {{ form_errors(form.commentaire) }}
+                </div>
+
+                <div class="text-center">
+                    <button class="btn btn-success px-4 py-2">
+                        <i class="bi bi-send-fill"></i> Envoyer
+                    </button>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}

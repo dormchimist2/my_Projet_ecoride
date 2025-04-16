@@ -77,9 +77,16 @@ private ?int $id = null;
     #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'covoiturage')]
     private Collection $reservations;
 
+    /**
+     * @var Collection<int, Avis>
+     */
+    #[ORM\OneToMany(targetEntity: Avis::class, mappedBy: 'trajet')]
+    private Collection $avis;
+
     public function __construct()
     {
         $this->reservations = new ArrayCollection();
+        $this->avis = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -267,6 +274,36 @@ public function terminer(): void
 public function annuler(): void
 {
     $this->status = self::STATUS_ANNULE;
+}
+
+/**
+ * @return Collection<int, Avis>
+ */
+public function getAvis(): Collection
+{
+    return $this->avis;
+}
+
+public function addAvi(Avis $avi): static
+{
+    if (!$this->avis->contains($avi)) {
+        $this->avis->add($avi);
+        $avi->setTrajet($this);
+    }
+
+    return $this;
+}
+
+public function removeAvi(Avis $avi): static
+{
+    if ($this->avis->removeElement($avi)) {
+        // set the owning side to null (unless already changed)
+        if ($avi->getTrajet() === $this) {
+            $avi->setTrajet(null);
+        }
+    }
+
+    return $this;
 }
 
 }
