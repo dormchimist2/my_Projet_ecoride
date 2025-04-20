@@ -28,6 +28,15 @@ class Avis
     #[ORM\ManyToOne(inversedBy: 'avis')]
     private ?Covoiturage $trajet = null;
 
+    
+public const STATUS_PENDING = 'pending';
+public const STATUS_ACCEPTED = 'accepted';
+public const STATUS_REJECTED = 'rejected';
+
+    #[ORM\Column(length: 20)]
+private string $status = 'pending'; // valeurs possibles : 'pending', 'accepted', 'rejected'
+
+
     public function getId(): ?int
     {
         return $this->id;
@@ -37,6 +46,7 @@ class Avis
     {
         return $this->note;
     }
+
 
     public function setNote(?int $note): static
     {
@@ -92,4 +102,17 @@ class Avis
 
         return $this;
     }
+
+   public function getStatus(): string
+{
+    return $this->status;
+}
+
+public function setStatus(string $status): self
+{
+    $this->status = $status;
+    return $this;
+}
+
+
 }

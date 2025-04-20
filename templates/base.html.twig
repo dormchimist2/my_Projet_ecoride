@@ -84,6 +84,21 @@
     
 {% endif %}
 
+ {% if is_granted('ROLE_EMPLOYE') %}
+    <li class="nav-item">
+        <!-- Utilisation de app.user.id pour afficher le profil de l'utilisateur actuel -->
+        <a class="nav-link menu-item" href="/profile/{{ app.user.id }}">Mon Profil</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link menu-item" href="{{ path('admin_avis_en_attente') }}"> Modérateur d’avis </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link menu-item" href="{{ path('admin_avis_rejeter_enregister') }}">Avis rejeter</a>
+    </li>
+    
+    
+{% endif %}
+
             </ul>
         </div>
 

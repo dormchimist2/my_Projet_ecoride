@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}📝 Avis en attente de validation{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="text-center mb-4">
+        <h1 class="text-primary" Avis en attente</h1>
+        <p class="text-muted">Validez ou rejetez les avis laissés par les passagers</p>
+    </div>
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success text-center">{{ message }}</div>
+    {% endfor %}
+    {% for message in app.flashes('danger') %}
+        <div class="alert alert-danger text-center">{{ message }}</div>
+    {% endfor %}
+
+    {% if avis is empty %}
+        <div class="alert alert-info text-center">Aucun avis en attente de validation.</div>
+    {% else %}
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+            {% for a in avis %}
+                <div class="col">
+                    <div class="card border shadow-sm">
+                        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                            <span><i class="bi bi-person-circle"></i> <strong>{{ a.auteur.pseudo }}</strong></span>
+                            <span class="badge bg-warning text-dark">⭐ {{ a.note }}/5</span>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">
+                                {{ a.commentaire|nl2br }}
+                            </p>
+                        </div>
+                        <div class="card-footer d-flex justify-content-end gap-2">
+                            <a href="{{ path('admin_avis_valider', {id: a.id}) }}" class="btn btn-success btn-sm">
+                                <i class="bi bi-check-circle"></i> Valider
+                            </a>
+                            <a href="{{ path('admin_avis_rejeter', {id: a.id}) }}" class="btn btn-danger btn-sm">
+                                <i class="bi bi-x-circle"></i> Rejeter
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
