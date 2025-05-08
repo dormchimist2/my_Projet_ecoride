@@ -40,4 +40,18 @@ class AvisRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    public function getMoyenneNoteParConducteur($conducteur): ?float
+    {
+        return $this->createQueryBuilder('a')
+            ->select('AVG(a.note)')
+            ->where('a.conducteur = :conducteur')
+            ->andWhere('a.status = :status')
+            ->setParameter('conducteur', $conducteur)
+            ->setParameter('status', 'accepted') // ou 'valide' si tu as un autre statut
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+    
+
 }

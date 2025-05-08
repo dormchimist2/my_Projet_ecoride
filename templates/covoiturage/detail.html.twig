@@ -103,6 +103,27 @@
             <div class="conducteur-info">
                 <h5 class="conducteur-pseudo">{{ covoiturage.user.pseudo }}</h5>
             </div>
+        
+    <div class="conducteur-info">
+    {% if moyenne_note %}
+        <div class="star-rating">
+            {% for i in 1..5 %}
+                {% if i <= moyenne_note %}
+                    <span class="text-warning">★</span>  <!-- Étoile pleine -->
+                {% else %}
+                    <span class="text-muted">☆</span>  <!-- Étoile vide -->
+                {% endif %}
+            {% endfor %}
+        </div>
+       
+    {% else %}
+        <p class="text-muted">Aucune note disponible</p>
+    {% endif %}
+</div>
+
+
+
+            
         </div>
 
         <!-- Sous-titre préférences -->

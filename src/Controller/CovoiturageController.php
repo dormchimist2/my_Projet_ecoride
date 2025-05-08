@@ -14,6 +14,10 @@ use App\Repository\CovoiturageRepository;
 use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\SecurityBundle\Security;
+use App\Repository\AvisRepository;
+
+
+
 
 class CovoiturageController extends AbstractController
 {
@@ -55,23 +59,36 @@ public function index(Request $request, CovoiturageRepository $covoiturageReposi
 
 
 
-    #[Route('/covoiturage/{id}', name: 'covoiturage_detail', methods: ['GET'])]
-    public function detail(int $id, CovoiturageRepository $covoiturageRepository): Response
-    {
-        $covoiturage = $covoiturageRepository->find($id);
+#[Route('/covoiturage/{id}', name: 'covoiturage_detail', methods: ['GET'])]
+public function detail(int $id, CovoiturageRepository $covoiturageRepository, AvisRepository $avisRepository): Response
+{
+    // Récupère le covoiturage
+    $covoiturage = $covoiturageRepository->find($id);
 
-        if (!$covoiturage) {
-            $this->addFlash('error', 'Ce covoiturage n\'existe pas.');
-            return $this->redirectToRoute('covoiturage_index');
-        }
-
-        return $this->render('covoiturage/detail.html.twig', [
-            'covoiturage' => $covoiturage,
-            'conducteur' => $covoiturage->getUser(),
-            'voiture' => $covoiturage->getVoiture(),
-            'preferences' => $covoiturage->getUser()->getPreferenceCdt(),
-        ]);
+    if (!$covoiturage) {
+        $this->addFlash('error', 'Ce covoiturage n\'existe pas.');
+        return $this->redirectToRoute('covoiturage_index');
     }
+
+    // Récupère le conducteur du covoiturage
+    $conducteur = $covoiturage->getUser();
+
+    // Calcul de la moyenne des avis pour ce conducteur
+    $moyenne = $avisRepository->getMoyenneNoteParConducteur($conducteur);
+
+    // Affichage dans le template
+    return $this->render('covoiturage/detail.html.twig', [
+        'covoiturage' => $covoiturage,
+        'conducteur' => $conducteur,
+        'voiture' => $covoiturage->getVoiture(),
+        'preferences' => $covoiturage->getUser()->getPreferenceCdt(),
+        'moyenne_note' => $moyenne, // Passer la moyenne des avis ici
+    ]);
+}
+
+    
+
+
 
     #[Route('/covoiturage/{id}/calcul-credit', name: 'covoiturage_calcul_credit', methods: ['GET'])]
 public function calculerCredit(int $id, Request $request, CovoiturageRepository $covoiturageRepository): JsonResponse

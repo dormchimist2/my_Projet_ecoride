@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Messagerie Ecoride{% endblock %}
+
+{% block body %}
+<div class="container-fluid p-0">
+    <header class="d-flex justify-content-between align-items-center p-3 bg-light border-bottom">
+        <h1 class="h4 mb-0">📬 Messagerie</h1>
+        <a href="/ecorideMessageProject/formulaire.html" class="btn btn-success" target='messageFrame'>
+            ➕ Nouveau message
+        </a>
+    </header>
+
+    <div class="row g-0" >
+        <!-- Sidebar -->
+        <div class="col-md-3 border-end bg-light overflow-auto p-3">
+            <h5>📁 Conversations</h5>
+            <div id="conversation-list" data-controller="conversations">
+                <!-- Le contenu est chargé dynamiquement ou en PHP -->
+                <iframe src="/ecorideMessageProject/voir_conversation.php?email={{ email }}"
+                        class="w-100 border-0"
+                        style="height: 60%; min-height: 600px;"
+                        title="Liste des conversations">
+                </iframe>
+            </div>
+        </div>
+
+        <!-- Iframe pour contenu -->
+        <div class="col-md-9">
+            <iframe name="messageFrame"
+                    class="w-100 h-100 border-0"
+                    title="Contenu message"
+                    src=""></iframe>
+        </div>
+    </div>
+</div>
+{% endblock %}

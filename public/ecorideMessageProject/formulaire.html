@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Nouvelle Conversation</title>
+    <link rel="stylesheet" href="/ecorideMessageProject/assets/style.css">
+</head>
+<body>
+    <div class="conversation-form-container">
+        <form class="conversation-form" action="creer_conversation.php" method="POST">
+            <h2>Créer une Conversation</h2>
+
+            <label for="subject">Objet de la conversation :</label>
+            <input type="text" name="subject" id="subject" placeholder="Sujet de la conversation" required>
+
+            <label for="participants">Destinataire:</label>
+            <input type="text" name="participants" id="participants" placeholder="ex: a@a.com,b@b.com" required>
+
+            <label for="sender_email">Email de l'expéditeur :</label>
+            <input type="email" name="sender_email" id="sender_email" required>
+
+            <label for="message">Premier message :</label>
+            <textarea name="message" id="message" required></textarea>
+
+            <button type="submit">Envoyer</button>
+        </form>
+    </div>
+</body>
+</html>
